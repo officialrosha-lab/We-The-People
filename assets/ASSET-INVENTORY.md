@@ -39,5 +39,5 @@ Six of twelve supplied photos are used. No EXIF or location data in the original
 | march-banner-group.jpg | Marchers behind the banner (portrait) | |
 Not used: an aerial crowd photo watermarked "SATEC IMAGE" (third-party rights), close-ups of individuals, and near-duplicates. The screenshot of the Facebook statement is not published. The printed shirts and banners spell "POEPLE" in places; the photos show them as printed.
 \n
-## Video held back: march speech
-`assets/video-pending/march-speech.mp4` (5.8 MB, 640 px wide, 90 s, no metadata; original 24 MB, 848 x 478) and a poster frame, `src/assets/photos/march-video-poster.jpg`. Not served until captions and a transcript are reviewed (see `assets/video-pending/README.md`).
+## Video: march speech
+`public/video/march-speech.mp4` (5.8 MB, 640 px wide, 90 s, no metadata; original 24 MB, 848 x 478) with a poster frame, `src/assets/photos/march-video-poster.jpg`. Published on the march story. No captions or transcript yet (owner decision; see `assets/video/README.md` and DECISIONS D11).

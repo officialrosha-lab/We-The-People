@@ -63,17 +63,21 @@ const stories = defineCollection({
       byline: z.string(),
       county: z.string().optional(),
       consent: z.literal(true),
-      // A video is published only with reviewed captions (WebVTT) and a transcript. Files live in public/video.
+      // Captions (WebVTT) and a transcript are optional but encouraged; the player says so when they are missing.
+      // Video files live in public/video.
       video: z
         .object({
           src: z.string().startsWith('/video/'),
           poster: image(),
           posterAlt: z.string().min(10),
-          captions: z.string().startsWith('/video/').endsWith('.vtt'),
-          transcript: z.string().min(40),
+          captions: z
+            .string()
+            .startsWith('/video/')
+            .endsWith('.vtt')
+            .optional(),
+          transcript: z.string().min(40).optional(),
           title: z.string(),
           duration: z.string(),
-          captionsReviewed: z.literal(true),
         })
         .optional(),
       images: z

@@ -5,6 +5,12 @@ date: 2025-08-07
 byline: "We The People Movement"
 county: "Montserrado"
 consent: true
+video:
+  src: /video/march-speech.mp4
+  poster: ../../src/assets/photos/march-video-poster.jpg
+  posterAlt: "A speaker in a black cap and T-shirt holds a microphone and gestures while speaking to the crowd at the march. Other marchers stand beside him in front of trees with yellow blossom."
+  title: "A speaker addresses the crowd at the march"
+  duration: "1 min 30 s"
 images:
   - src: ../../src/assets/photos/march-banner.jpg
     alt: "Marchers in black T-shirts hold a large banner reading We The People, Inc., Liberia Says No To Drugs, Protect Our Youth, Save Our Future. The names of partner organisations run along the bottom, and one man points ahead."

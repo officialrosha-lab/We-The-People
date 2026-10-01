@@ -71,10 +71,10 @@ Plain website with all information about We The People. Content is Markdown/YAML
 - Without JavaScript an unconnected form cannot post anywhere, so it shows "This form needs JavaScript until it is switched on."
   \n
 
-## D11. Video policy
+## D11. Video policy (amended 2026-10-01)
 
-- A video is published only with reviewed WebVTT captions and a transcript. The content schema enforces it (`captionsReviewed: true`), so an uncaptioned video cannot build.
-- Click to play: `preload="none"`, a poster, no autoplay, no sound until pressed. Source files are compressed to about 450 kbps video and 56 kbps mono audio (about 6 MB for 90 seconds), with metadata stripped.
-- Unreviewed video files live in `assets/video-pending/`, outside `public/`, so they are never served by accident.
-- Machine transcripts are not used as captions: a trial on the march speech misheard the speech and invented claims about the speaker.
+- **Owner decision:** videos are not required to have captions or a transcript. The earlier rule (captions and a transcript required before publishing) is removed; the schema no longer enforces it. Captions and a transcript remain supported and encouraged.
+- **Known gap, accepted by the owner:** the march-speech video has no captions. Deaf and hard-of-hearing visitors, and anyone watching without sound, cannot follow the speech. This fails WCAG 2.2 success criterion 1.2.2 (Level A, captions for prerecorded video), which the project had set as its accessibility floor. The page says "This video does not have captions yet." and describes what the video shows. It must be listed in the accessibility statement (a placeholder exists) and fixed when someone can write the captions; see `assets/video/README.md`, which needs no code change.
+- Click to play: `preload="none"`, a poster, no autoplay, no sound until pressed. Sources are compressed to about 450 kbps video and 56 kbps mono audio (about 6 MB for 90 seconds), with metadata stripped.
+- Machine transcripts are not used as captions: a trial misheard the speech and invented claims about the speaker.
 - The legal name is "We The People, Inc." (owner, 2026-10-01); the movement is known as the We The People Movement. The footer and Transparency page say so; registration details remain placeholders.

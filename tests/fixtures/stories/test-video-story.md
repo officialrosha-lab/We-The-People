@@ -12,7 +12,6 @@ video:
   transcript: "Test fixture transcript, first paragraph. This is not a real transcript.\n\nTest fixture transcript, second paragraph."
   title: 'Test fixture video'
   duration: '1 min 30 s'
-  captionsReviewed: true
 ---
 
 This is test data, not a real story.

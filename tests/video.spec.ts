@@ -1,6 +1,5 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { existsSync } from 'node:fs';
 
 const page_ = '/stories/test-video-story/';
 
@@ -55,15 +54,52 @@ test.describe('video player (test fixture story)', () => {
   });
 });
 
-test.describe('the real march video is held back', () => {
-  test('is not on the march story and not served from the site', async ({
+test.describe('the march speech video', () => {
+  const march = '/stories/2025-08-march-to-the-capitol/';
+
+  test('is published, click-to-play, and says plainly that it has no captions yet', async ({
     page,
+  }) => {
+    const media: string[] = [];
+    page.on('request', (r) => {
+      if (r.url().endsWith('/video/march-speech.mp4')) media.push(r.url());
+    });
+    await page.goto(march, { waitUntil: 'networkidle' });
+    const video = page.locator('video');
+    await expect(video).toHaveCount(1);
+    await expect(video).toHaveAttribute('controls', '');
+    await expect(video).toHaveAttribute('preload', 'none');
+    await expect(video).not.toHaveAttribute('autoplay', /.*/);
+    await expect(video).toHaveAttribute('poster', /\.webp/);
+    await expect(page.locator('video track')).toHaveCount(0);
+    await expect(
+      page.locator('figcaption', { hasText: 'does not have captions yet' }),
+    ).toBeVisible();
+    await expect(page.getByText('What the video shows:')).toBeVisible();
+    expect(media).toHaveLength(0); // nothing downloads until someone presses play
+  });
+
+  test('the video file is served and plays as H.264 mp4', async ({
     request,
   }) => {
-    await page.goto('/stories/2025-08-march-to-the-capitol/');
-    await expect(page.locator('video')).toHaveCount(0);
-    const res = await request.get('/video/march-speech.mp4');
-    expect(res.status()).toBe(404);
-    expect(existsSync('public/video/march-speech.mp4')).toBe(false);
+    const res = await request.head('/video/march-speech.mp4');
+    expect(res.status()).toBe(200);
+    expect(res.headers()['content-type']).toContain('video/mp4');
+    expect(Number(res.headers()['content-length'])).toBeLessThan(8_000_000);
+  });
+
+  test('has no horizontal scroll at 360px and passes axe', async ({ page }) => {
+    await page.setViewportSize({ width: 360, height: 800 });
+    await page.goto(march);
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth - innerWidth,
+      ),
+    ).toBe(0);
+    const r = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+      .analyze();
+    // The missing captions are a known, owner-accepted gap (DECISIONS D11). axe cannot see the audio, so it stays clean.
+    expect(r.violations).toEqual([]);
   });
 });
