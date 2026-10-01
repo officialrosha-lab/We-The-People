@@ -1,8 +1,10 @@
 import { defineConfig } from '@playwright/test';
 
-// Tests build with a mock form endpoint and fixture events; production builds use neither.
+// Tests build with test-form endpoints on the real provider domains (the build rejects other domains)
+// and fixture events. The tests intercept every request to them, so nothing reaches either service.
+// Production builds use neither.
 const env =
-  'PUBLIC_FORM_ENDPOINT=https://forms.example.test/submit EVENTS_DIR=./tests/fixtures/events';
+  'PUBLIC_FORMSPREE_ENDPOINT=https://formspree.io/f/testform PUBLIC_BREVO_FORM_URL=https://test.sibforms.com/serve/testform EVENTS_DIR=./tests/fixtures/events';
 
 export default defineConfig({
   testDir: 'tests',

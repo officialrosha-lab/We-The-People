@@ -23,9 +23,10 @@ Claude Code appends every unresolved placeholder here: file, location, what is n
 | content/counties/ (empty) | one file per county | Branch status and contact, only when real. Add `<slug>.md` with `branchStatus` and `contact` | Owner |
 | content/stories/ (empty) | one file per story | Stories with documented consent; add to CONSENT-LOG.md first | Owner |
 | src/pages/privacy.astro, accessibility.astro | whole page | Privacy policy and accessibility statement, drafted for legal review | Owner / legal |
-| .env / hosting settings | `PUBLIC_FORM_ENDPOINT` | Choose a hosted form provider and set its endpoint. Until then Join, Contact and Event forms show a "not accepting submissions" notice and the footer newsletter box is hidden | Owner |
-| Form provider settings | confirmation redirect | Set the provider's redirect to `/thanks/`; route submissions to the right inbox; turn on its spam filtering | Owner |
-| Newsletter provider | double opt-in, unsubscribe | Confirmation email and one-click unsubscribe must come from the provider; the site cannot enforce them | Owner / legal |
 | src/pages/join.astro | "What happens after you join" | How soon and who contacts a new member | Owner |
 | src/components/ActionForm.astro | privacy lines under each form | Legal review of the one-line privacy statements; they promise use "only" for the stated purpose | Owner / legal |
 | content/events/ (empty) | one file per event | Real events: title, summary, start (UTC, same as Monrovia time), place, optional end, county, `registration: true` to open sign-up | Owner |
+| Formspree account | `PUBLIC_FORMSPREE_ENDPOINT` | Create the form, set the notification inbox and the redirect to `/thanks/`, copy the endpoint into the build environment (docs/13) | Owner |
+| Brevo account | `PUBLIC_BREVO_FORM_URL` | Create the list and sign-up form with double confirmation on, share as Simple HTML, copy the action URL, set sender name and address (docs/13) | Owner |
+| Brevo emails | sender, footer, unsubscribe | Registered organisation details for the email footer and a working unsubscribe link | Owner / legal |
+| Privacy policy | processors | Name Formspree and Brevo as processors and where they store data | Owner / legal |

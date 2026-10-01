@@ -1,5 +1,10 @@
 ---
-import { formEndpoint, countyOptions, helpOptions } from '../lib/forms';
+import {
+  formEndpoint,
+  newsletterEndpoint,
+  countyOptions,
+  helpOptions,
+} from '../lib/forms';
 
 interface Props {
   kind: 'join' | 'contact' | 'event' | 'newsletter';
@@ -13,7 +18,8 @@ const success: Record<Props['kind'], string> = {
   join: 'You have joined the movement.',
   contact: 'Your message has been sent.',
   event: 'You are registered.',
-  newsletter: 'Thank you. We have your email address.',
+  newsletter:
+    'Thank you. If you are not already subscribed, we will email you to confirm your address.',
 };
 const privacy: Record<Props['kind'], string> = {
   join: 'We use your details only to respond to this form.',
@@ -22,8 +28,17 @@ const privacy: Record<Props['kind'], string> = {
   newsletter:
     'We use your email address only to send you updates from the movement.',
 };
+const isNews = kind === 'newsletter';
+// Join, contact and event forms go to Formspree; the newsletter goes to Brevo.
+const endpoint = isNews ? newsletterEndpoint : formEndpoint;
+const subject: Record<Props['kind'], string> = {
+  join: 'Website: new member',
+  contact: 'Website: message',
+  event: 'Website: event registration',
+  newsletter: '',
+};
 // A mailing-list box that cannot send would only be noise on every page, so hide it until it works.
-const hidden = kind === 'newsletter' && !formEndpoint;
+const hidden = isNews && !endpoint;
 const nextStep: Record<Props['kind'], string> = {
   join: 'We will contact you at',
   contact: 'We will reply to',
@@ -34,7 +49,7 @@ const nextStep: Record<Props['kind'], string> = {
 
 {hidden ? null : (
   <div class="af" data-kind={kind}>
-    {!formEndpoint && (
+    {!endpoint && (
       <p class="af-notice" role="note">
         This form is not accepting submissions yet. [PLACEHOLDER: the form
         endpoint has not been configured]
@@ -42,14 +57,25 @@ const nextStep: Record<Props['kind'], string> = {
     )}
     <form
       method="post"
-      action={formEndpoint || undefined}
+      action={endpoint || undefined}
       novalidate
       data-action-form
-      data-endpoint={formEndpoint}
+      data-endpoint={endpoint}
+      data-mode={isNews ? 'brevo' : 'formspree'}
       data-success={success[kind]}
       data-next={nextStep[kind]}
     >
-      <input type="hidden" name="form" value={kind} />
+      {isNews ? (
+        <>
+          <input type="hidden" name="locale" value="en" />
+          <input type="hidden" name="html_type" value="simple" />
+        </>
+      ) : (
+        <>
+          <input type="hidden" name="form" value={kind} />
+          <input type="hidden" name="_subject" value={subject[kind]} />
+        </>
+      )}
       {Object.entries(extra).map(([k, v]) => (
         <input type="hidden" name={k} value={v} />
       ))}
@@ -58,7 +84,12 @@ const nextStep: Record<Props['kind'], string> = {
       <div class="af-trap" aria-hidden="true">
         <label>
           Leave this empty{' '}
-          <input type="text" name="website" tabindex="-1" autocomplete="off" />
+          <input
+            type="text"
+            name={isNews ? 'email_address_check' : '_gotcha'}
+            tabindex="-1"
+            autocomplete="off"
+          />
         </label>
       </div>
 
@@ -83,7 +114,7 @@ const nextStep: Record<Props['kind'], string> = {
         </label>
         <input
           id={id('contact')}
-          name="contact"
+          name={isNews ? 'EMAIL' : 'contact'}
           type={kind === 'newsletter' ? 'email' : 'text'}
           inputmode={kind === 'newsletter' ? 'email' : undefined}
           autocomplete={kind === 'newsletter' ? 'email' : undefined}
@@ -142,7 +173,7 @@ const nextStep: Record<Props['kind'], string> = {
         </div>
       )}
 
-      <button class="btn" type="submit" disabled={!formEndpoint}>
+      <button class="btn" type="submit" disabled={!endpoint}>
         {submitLabel}
       </button>
       <p class="af-status" role="status" aria-live="polite" data-status></p>
@@ -228,7 +259,13 @@ const nextStep: Record<Props['kind'], string> = {
           return;
         }
         const data = new FormData(form);
-        if (data.get('website')) return; // honeypot filled: silently drop
+        if (data.get('_gotcha') || data.get('email_address_check')) return; // honeypot filled: silently drop
+        const contactField =
+          form.querySelector<HTMLInputElement>('[data-contact]');
+        const to = contactField?.value.trim() ?? '';
+        const brevo = form.dataset.mode === 'brevo';
+        // Formspree sends replies to the field named "email".
+        if (!brevo && to.includes('@')) data.set('email', to);
         sending = true;
         const label = button?.textContent ?? '';
         if (button) {
@@ -236,13 +273,23 @@ const nextStep: Record<Props['kind'], string> = {
           button.textContent = 'Sending';
         }
         try {
-          const res = await fetch(endpoint, {
-            method: 'POST',
-            body: data,
-            headers: { Accept: 'application/json' },
-          });
-          if (!res.ok) throw new Error(String(res.status));
-          const to = String(data.get('contact') ?? '');
+          if (brevo) {
+            // Brevo does not return a readable cross-origin reply, so success here means "delivered to Brevo".
+            await fetch(endpoint, {
+              method: 'POST',
+              mode: 'no-cors',
+              body: new URLSearchParams(
+                data as unknown as Record<string, string>,
+              ),
+            });
+          } else {
+            const res = await fetch(endpoint, {
+              method: 'POST',
+              body: data,
+              headers: { Accept: 'application/json' },
+            });
+            if (!res.ok) throw new Error(String(res.status));
+          }
           const next = form.dataset.next;
           const panel = document.createElement('div');
           panel.className = 'af-success';

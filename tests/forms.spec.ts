@@ -1,17 +1,31 @@
 import { test, expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-const ENDPOINT = 'https://forms.example.test/submit';
+const FORMSPREE = 'https://formspree.io/f/testform';
+const BREVO = 'https://test.sibforms.com/serve/testform';
 
+// Every request to either provider is intercepted: nothing in the tests reaches the real services.
 async function mock(page: Page, status = 200) {
   const posts: string[] = [];
-  await page.route(ENDPOINT, async (route) => {
+  await page.route(FORMSPREE, async (route) => {
     posts.push(route.request().postData() ?? '');
     await route.fulfill({
       status,
       contentType: 'application/json',
-      body: '{}',
+      body: status === 200 ? '{"ok":true}' : '{"errors":[{"message":"error"}]}',
     });
+  });
+  return posts;
+}
+async function mockBrevo(page: Page) {
+  const posts: { body: string; type: string }[] = [];
+  await page.route(BREVO, async (route) => {
+    const req = route.request();
+    posts.push({
+      body: req.postData() ?? '',
+      type: req.headers()['content-type'] ?? '',
+    });
+    await route.fulfill({ status: 200, contentType: 'text/html', body: 'ok' });
   });
   return posts;
 }
@@ -111,7 +125,7 @@ test.describe('join form', () => {
     await page
       .locator('#join-name')
       .locator('xpath=ancestor::form')
-      .locator('input[name=website]')
+      .locator('input[name=_gotcha]')
       .fill('http://spam.example', { force: true });
     await page
       .getByRole('button', { name: 'Join the movement', exact: true })
@@ -135,24 +149,111 @@ test.describe('join form', () => {
   });
 });
 
-test('newsletter form in the footer subscribes with an email only', async ({
-  page,
-}) => {
-  const posts = await mock(page);
-  await page.goto('/about/');
-  await page.fill('#newsletter-contact', 'not-an-email');
-  await page.getByRole('button', { name: 'Subscribe' }).click();
-  await expect(page.locator('#newsletter-contact-error')).toContainText(
-    'valid email',
-  );
-  await page.fill('#newsletter-contact', 'reader@example.org');
-  await page.getByRole('button', { name: 'Subscribe' }).click();
-  await expect(
-    page
-      .getByRole('status')
-      .filter({ hasText: 'Thank you. We have your email address.' }),
-  ).toBeVisible();
-  expect(posts).toHaveLength(1);
+test.describe('newsletter (Brevo)', () => {
+  test('subscribes with an email only, in Brevo field names', async ({
+    page,
+  }) => {
+    const posts = await mockBrevo(page);
+    await page.goto('/about/');
+    await page.fill('#newsletter-contact', 'not-an-email');
+    await page.getByRole('button', { name: 'Subscribe' }).click();
+    await expect(page.locator('#newsletter-contact-error')).toContainText(
+      'valid email',
+    );
+    expect(posts).toHaveLength(0);
+    await page.fill('#newsletter-contact', 'reader@example.org');
+    await page.getByRole('button', { name: 'Subscribe' }).click();
+    await expect(
+      page.getByRole('status').filter({
+        hasText:
+          'Thank you. If you are not already subscribed, we will email you to confirm your address.',
+      }),
+    ).toBeVisible();
+    expect(posts).toHaveLength(1);
+    const params = new URLSearchParams(posts[0]!.body);
+    expect(params.get('EMAIL')).toBe('reader@example.org');
+    expect(params.get('locale')).toBe('en');
+    expect(params.get('html_type')).toBe('simple');
+    expect(params.get('email_address_check')).toBe('');
+    expect(posts[0]!.type).toContain('application/x-www-form-urlencoded');
+  });
+
+  test('a filled honeypot sends nothing', async ({ page }) => {
+    const posts = await mockBrevo(page);
+    await page.goto('/about/');
+    await page.fill('#newsletter-contact', 'bot@example.org');
+    await page
+      .locator('input[name=email_address_check]')
+      .fill('x', { force: true });
+    await page.getByRole('button', { name: 'Subscribe' }).click();
+    await page.waitForTimeout(300);
+    expect(posts).toHaveLength(0);
+  });
+
+  test('has no name field and does not post to Formspree', async ({ page }) => {
+    const formspree = await mock(page);
+    await mockBrevo(page);
+    await page.goto('/about/');
+    await expect(page.locator('#newsletter-name')).toHaveCount(0);
+    await page.fill('#newsletter-contact', 'reader@example.org');
+    await page.getByRole('button', { name: 'Subscribe' }).click();
+    await expect(
+      page.getByRole('status').filter({ hasText: 'Thank you' }),
+    ).toBeVisible();
+    expect(formspree).toHaveLength(0);
+  });
+});
+
+test.describe('Formspree payload', () => {
+  test('join sends form, subject, reply-to email and an empty _gotcha', async ({
+    page,
+  }) => {
+    const posts = await mock(page);
+    let accept = '';
+    await page.route(FORMSPREE, async (route) => {
+      accept = route.request().headers()['accept'] ?? '';
+      posts.push(route.request().postData() ?? '');
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: '{"ok":true}',
+      });
+    });
+    await page.goto('/join/');
+    await page.fill('#join-name', 'Test Person');
+    await page.fill('#join-contact', 'test@example.org');
+    await page.selectOption('#join-county', 'Lofa');
+    await page
+      .getByRole('button', { name: 'Join the movement', exact: true })
+      .last()
+      .click();
+    await expect(
+      page.getByRole('status').filter({ hasText: 'You have joined' }),
+    ).toBeVisible();
+    expect(accept).toContain('application/json');
+    const body = posts.at(-1)!;
+    expect(body).toContain('name="form"');
+    expect(body).toContain('join');
+    expect(body).toContain('Website: new member');
+    expect(body).toMatch(/name="email"\r\n\r\ntest@example.org/);
+    expect(body).toMatch(/name="_gotcha"\r\n\r\n\r\n/);
+  });
+
+  test('a phone number is not sent as a reply-to email', async ({ page }) => {
+    const posts = await mock(page);
+    await page.goto('/join/');
+    await page.fill('#join-name', 'Test Person');
+    await page.fill('#join-contact', '+231 770 000 000');
+    await page.selectOption('#join-county', 'Lofa');
+    await page
+      .getByRole('button', { name: 'Join the movement', exact: true })
+      .last()
+      .click();
+    await expect(
+      page.getByRole('status').filter({ hasText: 'You have joined' }),
+    ).toBeVisible();
+    expect(posts[0]).not.toContain('name="email"');
+  });
 });
 
 test('contact form requires a message', async ({ page }) => {

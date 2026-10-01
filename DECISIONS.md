@@ -52,3 +52,12 @@ Plain website with all information about We The People. Content is Markdown/YAML
 - Newsletter: double opt-in and one-click unsubscribe must be provided by the provider or email platform; this site cannot enforce them. Copy promises nothing beyond "we have your address". Flagged for the owner and legal review.
 - Events: Markdown files in `content/events/`. Upcoming versus past is decided at build time, so the site needs a rebuild at least daily once events exist (scheduled deploy). Times are Africa/Monrovia (UTC+0, no daylight saving). Each event also gets a generated `.ics` file for "Add to calendar".
 - Campaign template: not built; it needs live totals or progress, which only make sense with the petition and payment tools that are out of scope.
+
+## D9. Third-party form services chosen (owner direction; amends D8)
+
+- Join, Contact and Event registration go to **Formspree** (`PUBLIC_FORMSPREE_ENDPOINT`). Newsletter sign-ups go to **Brevo** (`PUBLIC_BREVO_FORM_URL`, the form's action URL, with double confirmation turned on in Brevo). The old single `PUBLIC_FORM_ENDPOINT` is gone.
+- Formspree contract used: POST to `https://formspree.io/f/<id>` with `Accept: application/json`; a filled `_gotcha` field is silently ignored by Formspree; the field named `email` becomes the reply-to; `_subject` labels each form. Brevo contract used: POST to `https://<account>.sibforms.com/serve/<form-id>` with `EMAIL`, `locale`, `html_type=simple` and the `email_address_check` honeypot. Both from the providers' public documentation and community examples; **not yet exercised against live accounts**.
+- Brevo replies cannot be read across origins, so the newsletter uses `no-cors` and treats "delivered" as success. The thank-you copy is worded so it is true if double confirmation is on: "If you are not already subscribed, we will email you to confirm your address." If the owner does not turn double confirmation on in Brevo, that sentence must change.
+- Build guard: each variable must be an `https` URL on `formspree.io` or `sibforms.com` (or a subdomain); anything else fails the build, so a pasted wrong URL cannot send people's details to another host. Both values are public in the HTML, so no secret may be placed in them. A Brevo API key must never be used in the browser; none is needed.
+- Setup steps for the owner: `docs/13-form-integrations.md`.
+- Both providers are processors of personal data (names, contact details, counties). The privacy policy must name them and say where they store data; flagged for legal review.
