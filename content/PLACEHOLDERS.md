@@ -32,3 +32,8 @@ Claude Code appends every unresolved placeholder here: file, location, what is n
 | Privacy policy | processors | Name Formspree and Brevo as processors and where they store data | Owner / legal |
 | content/record/2025-11-anti-drugs-school-visit.md | body | Independent coverage of the 18 Nov 2025 visit, if any (the Record cites the movement's own post, labelled as such); whether to name and quote the Secretary General. (School name confirmed by the owner: Old Voker Mission School, Paynesville City.) | Owner |
 | content/CONSENT-LOG.md | school-visit photos | Owner states 100% consent (adults, school, guardians); confirm where the written records are kept and credit the actual photographer if not the movement | Owner |
+| content/CONSENT-LOG.md | march photos | Confirm consent covers the 7 Aug 2025 march photos (published provisionally on the owner's earlier consent statement) | Owner |
+| src/assets/photos/march-*.jpg | credit | Photographer credit, if not the movement itself | Owner |
+| (not published) aerial crowd photo | watermark "SATEC IMAGE" | Written permission and credit from SATEC IMAGE before any use | Owner |
+| content/record/2025-08-march-to-the-capitol.md | body | Independent coverage of the march; the "thousands" figure is the movement's own wording | Owner |
+| content/stories/2025-08-march-to-the-capitol.md | partners | Full names and approved spellings of MOTARWY, EMSASA, GLHF (used exactly as written in the post); consent from each partner to be named | Owner |

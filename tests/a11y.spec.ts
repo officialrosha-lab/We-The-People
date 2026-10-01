@@ -15,6 +15,7 @@ const paths = [
   '/record/',
   '/stories/',
   '/stories/2025-11-school-visit/',
+  '/stories/2025-08-march-to-the-capitol/',
   '/transparency/',
   '/join/',
   '/contact/',

@@ -80,3 +80,72 @@ test.describe('school visit story', () => {
     expect(bytes).toBeLessThan(1_000_000); // all five photos, scrolled to the end, under 1 MB
   });
 });
+
+test.describe('march to the Capitol story', () => {
+  const march = '/stories/2025-08-march-to-the-capitol/';
+
+  test('has six photos with alt text and names the partners', async ({
+    page,
+  }) => {
+    await page.goto(march);
+    await expect(page.locator('h1')).toContainText('Liberia says no to drugs');
+    for (const name of [
+      'MOTARWY',
+      'West Africa Drug Policy Network',
+      'LIBxRecords Foundation',
+      'EMSASA',
+      'Justice Forum of Liberia',
+      'GLHF',
+    ]) {
+      await expect(page.locator('article')).toContainText(name);
+    }
+    const imgs = page.locator('article img');
+    expect(await imgs.count()).toBe(6);
+    for (const img of await imgs.all()) {
+      expect(((await img.getAttribute('alt')) ?? '').length).toBeGreaterThan(
+        20,
+      );
+    }
+  });
+
+  test("cites the movement's own statement and links to the school story", async ({
+    page,
+  }) => {
+    await page.goto(march);
+    await expect(
+      page.locator('a[href="https://www.facebook.com/share/p/19PdFWZwjr/"]'),
+    ).toBeAttached();
+    await expect(
+      page.locator('a[href="/stories/2025-11-school-visit/"]'),
+    ).toBeAttached();
+  });
+
+  test('is on the record, the stories list and the drugs page, oldest first on the record', async ({
+    page,
+  }) => {
+    await page.goto('/record/');
+    await expect(
+      page.locator('a[href="/stories/2025-08-march-to-the-capitol/"]'),
+    ).toBeAttached();
+    const dates = await page.locator('.timeline time').allTextContents();
+    expect(dates.indexOf('7 August 2025')).toBeGreaterThan(
+      dates.indexOf('17 July 2025'),
+    );
+    expect(dates.indexOf('18 November 2025')).toBeGreaterThan(
+      dates.indexOf('7 August 2025'),
+    );
+    await page.goto('/stories/');
+    await expect(
+      page.locator('a[href="/stories/2025-08-march-to-the-capitol/"]').first(),
+    ).toBeAttached();
+    await page.goto('/our-work/drugs-and-recovery/');
+    await expect(
+      page.locator('a[href="/stories/2025-08-march-to-the-capitol/"]'),
+    ).toBeAttached();
+  });
+
+  test('does not publish the watermarked aerial photo', async ({ page }) => {
+    await page.goto(march);
+    expect(await page.content()).not.toMatch(/satec/i);
+  });
+});

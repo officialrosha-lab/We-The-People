@@ -26,3 +26,15 @@ Owner states consent is held for all of them (see `content/CONSENT-LOG.md`). The
 | school-visit-leaflets.jpg | Students and team holding "Drugs" leaflets | Story gallery | We The People Movement |
 | school-visit-classroom.jpg | Full classroom, sunlight through windows | Story gallery | We The People Movement |
 Alt text and captions live in `content/stories/2025-11-school-visit.md`. The screenshot of the Facebook post is not published.
+
+## Photos in use: 7 August 2025 march (src/assets/photos/march-*)
+Six of twelve supplied photos are used. No EXIF or location data in the originals. Credit shown: We The People Movement (photographer unknown). Alt text and captions are in `content/stories/2025-08-march-to-the-capitol.md`. Consent is provisional (see the consent log).
+| File | Shows | Notes |
+|---|---|---|
+| march-banner.jpg | Marchers holding the banner (lead) | Banner text and partner names legible |
+| march-sign.jpg | "Say No To Drugs, March to the Capitol, August 7, 2025" sign | Establishes the date |
+| march-stage-rain.jpg | Speakers and a document passed in the rain | Public figures present; none named |
+| march-press.jpg | A man speaking to media and phones | |
+| march-speaker.jpg | A speaker with hand raised (video frame, 1280 px wide) | Keep small |
+| march-banner-group.jpg | Marchers behind the banner (portrait) | |
+Not used: an aerial crowd photo watermarked "SATEC IMAGE" (third-party rights), close-ups of individuals, and near-duplicates. The screenshot of the Facebook statement is not published. The printed shirts and banners spell "POEPLE" in places; the photos show them as printed.

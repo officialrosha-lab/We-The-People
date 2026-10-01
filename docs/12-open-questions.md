@@ -26,3 +26,7 @@
 20. The movement's Facebook page is named "WE THE PEOPLE Inc" while the logo reads "We The People Movement". Which is the official legal name, and is there an incorporated entity ("Inc")? Affects the site name, footer, registration details and legal pages.
 21. A 18 November 2025 post names the Secretary General as Nichols Barti and quotes him. Is that his correct name and role, and may the site name and quote him? (The 2025 protest spokesperson is deliberately not named, see docs/01c.) Who else holds office?
 22. Resolved by the owner: the school is Old Voker Mission School, Paynesville City. (The sign in the group photo, which reads "...nesville Community High School", was not explained; the owner's name is used.)
+23. The banner and the 7 August 2025 statement read "WE THE PEOPLE, INC." (as does the Facebook page). This points to "We The People, Inc." as the legal name. Confirm, then the site name, footer and legal pages can follow (extends question 20).
+24. The march photos include elected or public figures and a legislative committee's shirts. Which of them, if any, may the site name? The site names no one in the photos for now.
+25. One aerial photo of the crowd carries a "SATEC IMAGE" watermark. Who is SATEC IMAGE, and may the site use and credit it?
+26. The 7 August statement names six affiliate organisations (MOTARWY, West Africa Drug Policy Network, LIBxRecords Foundation, EMSASA, Justice Forum of Liberia, GLHF). What is the relationship with each (partner, coalition member, affiliate), and do they agree to be named on the site?
