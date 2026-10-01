@@ -165,3 +165,7 @@ At the owner's request, the outreach network (D25) now spreads out from Montserr
 ## D27: Light keeps flowing along the hero links
 
 The owner could not see the one-shot dots (they play once per session and are small), and asked for movement "like light". After the intro, and straight away on later visits, a soft gold glow with a red core now travels along every link, wave after wave outward from Montserrado (CSS animation, about 4.8 s per wave). This is a deliberate, owner-requested exception to the "no looping decorative animation" rule in docs/design/07, kept safe by: a visible "Pause the moving light" button (WCAG 2.2.2), pausing while the map is off screen, and never running under reduced motion or without JavaScript. The 27 links repaint each frame, so watch performance on low-end phones; the pause button and reduced-motion setting are the escape hatches.
+
+## D28: Partners on the drugs and recovery page
+
+At the owner's request, MOTARWY (name and logo, as supplied) and Freedom Liberia are described under "Partners in this work" on the drugs and recovery page, using the owner's supplied text (emoji, hashtags and the "Join us" appeal removed, wording otherwise kept). Freedom Liberia's phone and email are published as the owner provided them. Nothing was added beyond that text.
