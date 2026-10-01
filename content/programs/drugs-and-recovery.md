@@ -15,7 +15,7 @@ Rehabilitation centers across the country, and contributions of money, time and 
 
 ## What has happened
 
-[PLACEHOLDER: what the movement has done so far, with dates and sources]
+On 18 November 2025 the movement and affiliated organisations took the anti-drugs awareness campaign into a school in Paynesville City, Montserrado County, and spoke with students about the danger of drugs. See the [record](/record/). [PLACEHOLDER: other activities, with dates and sources]
 
 ## How to help
 

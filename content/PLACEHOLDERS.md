@@ -30,3 +30,5 @@ Claude Code appends every unresolved placeholder here: file, location, what is n
 | Brevo account | `BREVO_FORM_URL` in src/lib/forms.ts | Create the list and sign-up form with double confirmation on, share as Simple HTML, paste its action URL into `BREVO_FORM_URL`, set sender name and address (docs/13) | Owner |
 | Brevo emails | sender, footer, unsubscribe | Registered organisation details for the email footer and a working unsubscribe link | Owner / legal |
 | Privacy policy | processors | Name Formspree and Brevo as processors and where they store data | Owner / legal |
+| content/record/2025-11-anti-drugs-school-visit.md | body | Link to the movement's 18 Nov 2025 post; the school's correct name (post says Old Voker Mission School; the sign in the group photo reads "...nesville Community High School", Montserrado); whether to name and quote the Secretary General | Owner |
+| assets/photos/ (not yet added) | 5 photos of the school visit | Written consent from the adults shown; school and guardian permission for any identifiable students (minors); photographer credit; alt text (see assets/ASSET-INVENTORY.md) | Owner |
