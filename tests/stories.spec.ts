@@ -1,0 +1,82 @@
+import { test, expect } from '@playwright/test';
+
+const story = '/stories/2025-11-school-visit/';
+
+test.describe('school visit story', () => {
+  test('names the school and every photo has real alt text', async ({
+    page,
+  }) => {
+    await page.goto(story);
+    await expect(page.locator('h1')).toContainText('Old Voker Mission School');
+    await expect(page.locator('article')).toContainText('Paynesville City');
+    const imgs = page.locator('article img');
+    expect(await imgs.count()).toBe(5);
+    for (const img of await imgs.all()) {
+      const alt = (await img.getAttribute('alt')) ?? '';
+      expect(alt.length).toBeGreaterThan(20);
+      expect(await img.getAttribute('width')).not.toBeNull(); // explicit size prevents layout shift
+      expect(await img.getAttribute('height')).not.toBeNull();
+    }
+  });
+
+  test('lead photo loads first, the rest are lazy', async ({ page }) => {
+    await page.goto(story);
+    const imgs = page.locator('article img');
+    await expect(imgs.first()).toHaveAttribute('loading', 'eager');
+    await expect(imgs.nth(1)).toHaveAttribute('loading', 'lazy');
+  });
+
+  test('serves modern formats and sets a link-preview image', async ({
+    page,
+  }) => {
+    await page.goto(story);
+    await expect(
+      page.locator('picture source[type="image/avif"]').first(),
+    ).toHaveCount(1);
+    await expect(
+      page.locator('picture source[type="image/webp"]').first(),
+    ).toHaveCount(1);
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+      'content',
+      /school-visit.*\.jpg/,
+    );
+  });
+
+  test('has no horizontal scroll at 360px', async ({ page }) => {
+    await page.setViewportSize({ width: 360, height: 800 });
+    await page.goto(story);
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth - innerWidth,
+      ),
+    ).toBe(0);
+  });
+
+  test('is linked from the stories list, home, record, drugs page and Montserrado', async ({
+    page,
+  }) => {
+    for (const path of [
+      '/stories/',
+      '/',
+      '/record/',
+      '/our-work/drugs-and-recovery/',
+      '/counties/montserrado/',
+    ]) {
+      await page.goto(path);
+      await expect(page.locator(`a[href="${story}"]`).first()).toBeAttached();
+    }
+  });
+
+  test('page weight stays small on a phone-sized screen', async ({ page }) => {
+    await page.setViewportSize({ width: 360, height: 800 });
+    let bytes = 0;
+    page.on('response', async (r) => {
+      const len = Number(r.headers()['content-length'] ?? 0);
+      if (r.url().includes('/_astro/school-visit')) bytes += len;
+    });
+    await page.goto(story, { waitUntil: 'networkidle' });
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await page.waitForLoadState('networkidle');
+    expect(bytes).toBeLessThan(1_000_000); // all five photos, scrolled to the end, under 1 MB
+  });
+});

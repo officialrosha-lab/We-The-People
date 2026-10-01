@@ -25,4 +25,4 @@
 
 20. The movement's Facebook page is named "WE THE PEOPLE Inc" while the logo reads "We The People Movement". Which is the official legal name, and is there an incorporated entity ("Inc")? Affects the site name, footer, registration details and legal pages.
 21. A 18 November 2025 post names the Secretary General as Nichols Barti and quotes him. Is that his correct name and role, and may the site name and quote him? (The 2025 protest spokesperson is deliberately not named, see docs/01c.) Who else holds office?
-22. The same post says the school is "Old Voker Mission School", but the sign in the group photo reads "...nesville Community High School". Which is correct?
+22. Resolved by the owner: the school is Old Voker Mission School, Paynesville City. (The sign in the group photo, which reads "...nesville Community High School", was not explained; the owner's name is used.)

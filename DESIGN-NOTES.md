@@ -150,3 +150,13 @@ Nothing built yet. Questions: see "Blocking" above. One batch only: logo files, 
 **Checked on a plain build with no variables:** the newsletter form appears on every page; no button has a disabled attribute; Join and Newsletter both showed the not-switched-on message with zero POST requests; axe: 0 violations on home, join, contact and events.
 **Tests:** 48 passing, including a valid form making no request and not claiming success, and invalid input still being caught first.
 **Open:** until real addresses are pasted in, visitors who press Send are told nothing was sent. That is accurate but means no sign-ups are collected; connecting the accounts before the site is public avoids it.
+
+## Photos and first story (2026-10-01)
+
+**Added:** the 18 Nov 2025 school visit as a story (`content/stories/2025-11-school-visit.md`), five photos, a `Photo` component, a lead-story layout on Stories and Home, and a link-preview image. The school is Old Voker Mission School, Paynesville City (confirmed by the owner).
+**Photography rules applied:** full colour, no overlay or duotone; documentary framing; explicit width and height; AVIF, WebP and JPEG at four widths; only the lead photo loads eagerly; alt text describes what is visible and names no one; credit line on every photo. Photos do not carry the logo and are not placed on a coloured block.
+**Consent:** the owner states 100% consent, including the school and guardians. It is recorded as a statement in the consent log, with the written records held by the owner. Because the students are minors, the owner should keep the school's permission letter on file and be ready to remove a photo promptly if anyone asks.
+**Layout:** story page is a headline, lead photo, 62-character text column, then an uneven two-column photo sequence (portrait photos in the narrow column). No card grid.
+**Tried and fixed:** top-edge black line and grey strip removed by cropping 5 and 8 pixels; the link-preview tag briefly broke the build (an HTML comment inside a JSX expression); a stray `$S` folder created by my own screenshot script was deleted.
+**Left out:** the Secretary General's name and quote, pending the owner's yes. The talk photo is a video still, so it is shown at the smaller width.
+**Tests:** 55 passing, including alt text on all five photos, explicit sizes, eager-lead and lazy-rest loading, AVIF and WebP sources, the preview image, no horizontal scroll at 360px, and under 1 MB of photos on a phone-sized screen.

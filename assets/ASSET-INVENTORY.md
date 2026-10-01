@@ -16,11 +16,13 @@ Notes
 |---|---|---|---|---|---|
 | logo/wtp-movement-logo-original.jpg | Logo (raster, 921x854) | Three raised figures (red, green, navy) holding a flag, rising sun, outline of Liberia, "WE THE PEOPLE" arch, "MOVEMENT" ribbon | [FILL designer/owner] | [FILL] | "We The People Movement logo: three people raise the Liberian-style flag before a rising sun and the map of Liberia" |
 
-## Offered by the owner, not yet added to the repository (consent pending)
-Held back deliberately: several show students in school uniform who are minors. Add to `assets/photos/` only after the rows in `content/CONSENT-LOG.md` are filled in.
-| Proposed name | Shows | Use | Concern |
+## Photos in use (src/assets/photos)
+Owner states consent is held for all of them (see `content/CONSENT-LOG.md`). The site generates AVIF, WebP and JPEG at 400 to 1600 px wide; the files below are the sources. The originals carried no EXIF or location data. A thin black line (team photo) and a pale grey strip (talk photo, a video frame) were cropped from the top edge.
+| File | Shows | Used in | Credit |
 |---|---|---|---|
-| school-visit-team-group.jpg | Six adults of the team outside the school, in red and blue vests with the flag patch | Best candidate: story, Record, Drugs and recovery page | Consent from the six adults |
-| school-visit-classroom-talk.jpg | Facilitators addressing a classroom, students mostly from behind | Candidate if faces are not identifiable | Frame is a video still, about 1080 px wide; students are minors |
-| school-visit-students-wide.jpg (two frames) | Classroom full of students facing the camera | Avoid on the web unless permission is documented | Many identifiable minors |
-| school-visit-leaflets.jpg | Students and team holding a "DRUGS" leaflet | Candidate if permission is documented | Identifiable minors; leaflet text should be checked |
+| school-visit-students.jpg | Students at desks listening, breeze-block windows | Story lead, home page, link preview | We The People Movement |
+| school-visit-team.jpg | Six team members outside the school | Story gallery | We The People Movement |
+| school-visit-talk.jpg | Facilitators addressing the class (video frame, about 1080 px wide: keep it small on screen) | Story gallery | We The People Movement |
+| school-visit-leaflets.jpg | Students and team holding "Drugs" leaflets | Story gallery | We The People Movement |
+| school-visit-classroom.jpg | Full classroom, sunlight through windows | Story gallery | We The People Movement |
+Alt text and captions live in `content/stories/2025-11-school-visit.md`. The screenshot of the Facebook post is not published.

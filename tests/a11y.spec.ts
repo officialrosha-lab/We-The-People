@@ -14,6 +14,7 @@ const paths = [
   '/counties/gbarpolu/',
   '/record/',
   '/stories/',
+  '/stories/2025-11-school-visit/',
   '/transparency/',
   '/join/',
   '/contact/',

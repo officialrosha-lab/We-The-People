@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import Photo from '../../components/Photo.astro';
 
 export async function getStaticPaths() {
   const stories = await getCollection('stories');
@@ -8,6 +9,7 @@ export async function getStaticPaths() {
 }
 const { story } = Astro.props;
 const { Content } = await render(story);
+const [lead, ...more] = story.data.images;
 const fmt = new Intl.DateTimeFormat('en-GB', {
   day: 'numeric',
   month: 'long',
@@ -16,36 +18,79 @@ const fmt = new Intl.DateTimeFormat('en-GB', {
 });
 ---
 
-<Base title={story.data.title} description={story.data.summary}>
-  <article class="section">
-    <div class="wrap prose">
-      <h1>{story.data.title}</h1>
-      <p class="meta">
-        {story.data.byline},{' '}
-        <time datetime={story.data.date.toISOString().slice(0, 10)}>
-          {fmt.format(story.data.date)}
-        </time>
-      </p>
-      <div class="body">
+<Base
+  title={story.data.title}
+  description={story.data.summary}
+  image={lead?.src}
+>
+  <article>
+    <section class="section">
+      <div class="wrap head">
+        <h1>{story.data.title}</h1>
+        <p class="meta">
+          {story.data.byline},{' '}
+          <time datetime={story.data.date.toISOString().slice(0, 10)}>
+            {fmt.format(story.data.date)}
+          </time>
+        </p>
+      </div>
+      {lead && (
+        <div class="wrap">
+          <Photo {...lead} sizes="(min-width: 1600px) 1500px, 92vw" priority />
+        </div>
+      )}
+    </section>
+    <section class="section">
+      <div class="wrap prose">
         <Content />
       </div>
-      <p>
-        <a class="btn" href="/join/">
-          Join the movement
-        </a>
-      </p>
-    </div>
+    </section>
+    {more.length > 0 && (
+      <section class="section">
+        <div class="wrap gallery">
+          {more.map((img) => (
+            <Photo {...img} sizes="(min-width: 900px) 55vw, 92vw" />
+          ))}
+        </div>
+      </section>
+    )}
+    <section class="section" data-ground="night">
+      <div class="wrap">
+        <p>
+          <a class="btn" href="/join/">
+            Join the movement
+          </a>
+        </p>
+        <p>
+          <a href="/stories/">All stories</a>
+        </p>
+      </div>
+    </section>
   </article>
 </Base>
 
 <style>
-  h1 {
+  .head h1 {
     text-transform: none;
-    font-size: var(--step-3);
-    font-stretch: 90%;
+    font-size: var(--step-4);
+    font-stretch: 75%;
+    font-weight: 800;
+    line-height: 0.95;
+    max-inline-size: 16ch;
   }
   .meta {
     font-family: var(--font-ui);
     color: var(--fg-muted);
+  }
+  .gallery {
+    display: grid;
+    gap: var(--s-4);
+    align-items: start;
+  }
+  @media (min-width: 900px) {
+    /* Uneven columns on purpose: portrait photos sit in the narrow column. */
+    .gallery {
+      grid-template-columns: 5fr 7fr;
+    }
   }
 </style>

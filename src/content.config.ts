@@ -42,16 +42,28 @@ const counties = defineCollection({
 });
 
 // Stories are published only with documented consent (content/CONSENT-LOG.md).
+// `images` are in src/assets/photos; the first is the lead photo. Every image needs honest alt text.
 const stories = defineCollection({
   loader: glob({ pattern: '*.md', base: './content/stories' }),
-  schema: z.object({
-    title: z.string(),
-    summary: z.string().max(160),
-    date: z.coerce.date(),
-    byline: z.string(),
-    county: z.string().optional(),
-    consent: z.literal(true),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      summary: z.string().max(160),
+      date: z.coerce.date(),
+      byline: z.string(),
+      county: z.string().optional(),
+      consent: z.literal(true),
+      images: z
+        .array(
+          z.object({
+            src: image(),
+            alt: z.string().min(10),
+            caption: z.string().optional(),
+            credit: z.string().default('We The People Movement'),
+          }),
+        )
+        .default([]),
+    }),
 });
 
 // Times are Africa/Monrovia (UTC+0). Registration is offered only when `registration: true`.

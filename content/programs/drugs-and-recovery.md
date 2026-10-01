@@ -15,7 +15,7 @@ Rehabilitation centers across the country, and contributions of money, time and 
 
 ## What has happened
 
-On 18 November 2025 the movement and affiliated organisations took the anti-drugs awareness campaign into a school in Paynesville City, Montserrado County, and spoke with students about the danger of drugs. See the [record](/record/). [PLACEHOLDER: other activities, with dates and sources]
+On 18 November 2025 the movement and affiliated organisations took the anti-drugs awareness campaign into Old Voker Mission School in Paynesville City, Montserrado County, and spoke with students about the danger of drugs. Read the [story](/stories/2025-11-school-visit/) and the [record](/record/). [PLACEHOLDER: other activities, with dates and sources]
 
 ## How to help
 
