@@ -153,3 +153,7 @@ The palette, type, Roll Call hero and the rules in docs/design (square blocks, p
 ## D24: Wide-screen layouts for text pages, Join and Stories
 
 On screens 1000px and wider, text pages (About, Contact, Privacy and the like) put each heading in a left margin column with its text beside it, instead of one narrow strip down the left edge. The Join page puts the "what happens after you join" notes beside the form, under a white rule. The Stories list shows a cropped thumbnail of each story. Phones keep the single column. No colours, fonts or hero changed.
+
+## D25: Outreach network on the hero map
+
+At the owner's request the hero map now shows connectivity and outreach. After the roll call lights the fifteen counties, links draw outward between neighbouring counties and small dots travel along them, then it settles and stays as a quiet network (navy links, gold nodes). Links are the shared borders computed from the map data, so nothing is invented; it is symbolic and does not claim where branches exist, and it starts from the county nearest the geographic middle, not a base. Plays once per session (about 2.5 s after the roll call), any click, key or scroll finishes it, reduced motion and no-JavaScript show the final state. Built with CSS plus the Web Animations API in the existing hero script. docs/design 05 and 07 updated first.

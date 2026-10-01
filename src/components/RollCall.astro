@@ -8,6 +8,79 @@ interface Props {
 }
 const { heading, sub } = Astro.props;
 const names = map.counties.map((c) => c.name);
+
+// The outreach network: a symbolic link between every pair of counties that share a border. Built from the map
+// geometry, so nothing is invented. It does not say where branches or offices are.
+const rings = map.counties.map((c) =>
+  c.d
+    .split('M')
+    .filter(Boolean)
+    .map((r) => {
+      const n = r.match(/-?\d+(?:\.\d+)?/g)!.map(Number);
+      const pts: [number, number][] = [];
+      for (let i = 0; i + 1 < n.length; i += 2) pts.push([n[i]!, n[i + 1]!]);
+      return pts;
+    }),
+);
+const centroid = (pts: [number, number][]) => {
+  let a = 0;
+  let x = 0;
+  let y = 0;
+  for (let i = 0; i < pts.length; i++) {
+    const [x0, y0] = pts[i]!;
+    const [x1, y1] = pts[(i + 1) % pts.length]!;
+    const f = x0 * y1 - x1 * y0;
+    a += f;
+    x += (x0 + x1) * f;
+    y += (y0 + y1) * f;
+  }
+  return [x / (3 * a), y / (3 * a)] as [number, number];
+};
+const nodes = rings.map((r) => {
+  const biggest = r.reduce((m, q) => (q.length > m.length ? q : m), r[0]!);
+  const [x, y] = centroid(biggest);
+  return { x: Math.round(x), y: Math.round(y) };
+});
+const adjacent = (a: number, b: number) => {
+  let close = 0;
+  for (const ra of rings[a]!)
+    for (const [ax, ay] of ra)
+      for (const rb of rings[b]!)
+        for (const [bx, by] of rb)
+          if (Math.hypot(ax - bx, ay - by) < 3) close++;
+  return close >= 2;
+};
+const pairs: [number, number][] = [];
+for (let a = 0; a < nodes.length; a++)
+  for (let b = a + 1; b < nodes.length; b++)
+    if (adjacent(a, b)) pairs.push([a, b]);
+// The wave spreads out from the county nearest the geographic middle of the map: a neutral start, not a claim about a base.
+const mx = nodes.reduce((t, n) => t + n.x, 0) / nodes.length;
+const my = nodes.reduce((t, n) => t + n.y, 0) / nodes.length;
+const start = nodes.reduce(
+  (best, n, i) =>
+    Math.hypot(n.x - mx, n.y - my) <
+    Math.hypot(nodes[best]!.x - mx, nodes[best]!.y - my)
+      ? i
+      : best,
+  0,
+);
+const depth = nodes.map(() => Infinity);
+depth[start] = 0;
+for (let k = 0; k < nodes.length; k++)
+  for (const [a, b] of pairs) {
+    if (depth[a]! + 1 < depth[b]!) depth[b] = depth[a]! + 1;
+    if (depth[b]! + 1 < depth[a]!) depth[a] = depth[b]! + 1;
+  }
+const edges = pairs.map(([a, b]) => {
+  const [from, to] = depth[a]! <= depth[b]! ? [a, b] : [b, a];
+  return {
+    from: nodes[from]!,
+    to: nodes[to]!,
+    order: Math.min(depth[a]!, depth[b]!),
+  };
+});
+const nodeDepth = nodes.map((_, i) => depth[i]!);
 ---
 
 <section class="roll section" data-ground="night" aria-labelledby="hero-title">
@@ -42,6 +115,30 @@ const names = map.counties.map((c) => c.name);
       {map.counties.map((c) => (
         <path id={c.id} data-name={c.name} d={c.d} />
       ))}
+      <g class="net">
+        {edges.map((e) => (
+          <path
+            class="net-edge"
+            pathLength="1"
+            style={`--o:${e.order}`}
+            data-order={e.order}
+            data-x1={e.from.x}
+            data-y1={e.from.y}
+            data-x2={e.to.x}
+            data-y2={e.to.y}
+            d={`M${e.from.x} ${e.from.y}L${e.to.x} ${e.to.y}`}
+          />
+        ))}
+        {nodes.map((n, i) => (
+          <circle
+            class="net-node"
+            style={`--o:${nodeDepth[i]}`}
+            cx={n.x}
+            cy={n.y}
+            r="6"
+          />
+        ))}
+      </g>
     </svg>
     <div class="roll-copy">
       <h1 id="hero-title" class="reveal">
@@ -69,8 +166,69 @@ const names = map.counties.map((c) => c.name);
   const root = document.documentElement;
   const caller = document.querySelector<HTMLElement>('[data-caller]');
   const paths = Array.from(
-    document.querySelectorAll<SVGPathElement>('.roll-map path'),
+    document.querySelectorAll<SVGPathElement>('.roll-map path[data-name]'),
   );
+
+  // Act two: once every county is lit, the network links draw outward from the middle of the map, and small gold dots
+  // travel along them, county to county. It plays once and settles; any click, key or scroll finishes it at once.
+  const svg = document.querySelector<SVGSVGElement>('.roll-map');
+  const NS = 'http://www.w3.org/2000/svg';
+  const HOP = 520; // ms between one ring of counties and the next
+  const TRAVEL = 720;
+  function runNetwork() {
+    if (!svg) return;
+    const dots: Animation[] = [];
+    const made: SVGCircleElement[] = [];
+    const finish = () => {
+      dots.forEach((a) => a.cancel());
+      made.forEach((c) => c.remove());
+      svg.classList.add('net-done');
+      ['pointerdown', 'keydown', 'wheel', 'touchmove'].forEach((t) =>
+        removeEventListener(t, finish),
+      );
+    };
+    svg.classList.add('net-on');
+    svg.querySelectorAll<SVGPathElement>('.net-edge').forEach((edge, i) => {
+      const d = edge.dataset;
+      const order = Number(d.order);
+      const delay = order * HOP + (i % 4) * 60;
+      edge.style.transitionDelay = `${delay}ms`;
+      const dot = document.createElementNS(NS, 'circle');
+      dot.setAttribute('r', '9');
+      dot.setAttribute('class', 'net-dot');
+      svg.querySelector('.net')!.appendChild(dot);
+      made.push(dot);
+      dots.push(
+        dot.animate(
+          [
+            {
+              transform: `translate(${d.x1}px, ${d.y1}px)`,
+              opacity: 0,
+            },
+            {
+              transform: `translate(${d.x1}px, ${d.y1}px)`,
+              opacity: 1,
+              offset: 0.15,
+            },
+            {
+              transform: `translate(${d.x2}px, ${d.y2}px)`,
+              opacity: 1,
+              offset: 0.85,
+            },
+            { transform: `translate(${d.x2}px, ${d.y2}px)`, opacity: 0 },
+          ],
+          { duration: TRAVEL, delay, fill: 'both', easing: 'ease-in-out' },
+        ),
+      );
+    });
+    const longest = Math.max(
+      ...Array.from(dots, (a) => Number(a.effect?.getComputedTiming().endTime)),
+    );
+    window.setTimeout(finish, longest + 100);
+    ['pointerdown', 'keydown', 'wheel', 'touchmove'].forEach((t) =>
+      addEventListener(t, finish, { passive: true }),
+    );
+  }
 
   if (root.dataset.roll === 'pending' && caller) {
     const timers: number[] = [];
@@ -115,6 +273,7 @@ const names = map.counties.map((c) => c.name);
       );
     });
     const done = START + paths.length * STEP; // about 5.5s
+    timers.push(window.setTimeout(runNetwork, done));
     timers.push(
       window.setTimeout(() => {
         root.dataset.roll = 'called';
@@ -202,15 +361,51 @@ const names = map.counties.map((c) => c.name);
     max-block-size: 45vh;
     justify-self: start;
   }
-  .roll-map path {
+  .roll-map path[data-name] {
     fill: var(--white);
     stroke: var(--night);
     stroke-width: 2;
     transition: fill var(--dur-1) var(--ease);
   }
-  html[data-roll] .roll-map path:not(.lit) {
+  html[data-roll] .roll-map path[data-name]:not(.lit) {
     fill: none;
     stroke: color-mix(in srgb, var(--chalk) 25%, transparent);
+  }
+
+  /* The outreach network. Final state (no animation, reduced motion, no JavaScript): quiet navy links and gold nodes. */
+  .net-edge {
+    fill: none;
+    stroke: var(--navy);
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+    opacity: 0.55;
+    pointer-events: none;
+  }
+  .net-node {
+    fill: var(--gold);
+    stroke: var(--night);
+    stroke-width: 2;
+  }
+  :global(.net-dot) {
+    fill: var(--red);
+    stroke: var(--white);
+    stroke-width: 3;
+    opacity: 0;
+  }
+  /* While the roll call runs the links are hidden; when it finishes they draw outward. */
+  html[data-roll] .roll-map:not(.net-on) .net-edge {
+    stroke-dashoffset: 1;
+  }
+  html[data-roll] .roll-map:not(.net-on) .net-node {
+    opacity: 0;
+  }
+  .roll-map.net-on .net-edge {
+    transition: stroke-dashoffset 720ms var(--ease);
+  }
+  .roll-map.net-on .net-node {
+    transition: opacity 240ms var(--ease) calc(var(--o) * 520ms);
   }
 
   .reveal {

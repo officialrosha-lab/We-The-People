@@ -8,7 +8,15 @@ test.describe('Roll Call hero', () => {
     await page.goto('/');
     await expect(page.locator('h1')).toHaveText('Fifteen counties. One table.');
     await expect(page.locator('.roll .sr-only li')).toHaveCount(15);
-    await expect(page.locator('.roll-map path')).toHaveCount(15);
+    await expect(page.locator('.roll-map path[data-name]')).toHaveCount(15);
+    // The outreach network is in the markup and fully drawn without JavaScript.
+    await expect(page.locator('.net-node')).toHaveCount(15);
+    expect(
+      await page
+        .locator('.net-edge')
+        .first()
+        .evaluate((e) => getComputedStyle(e).strokeDashoffset),
+    ).toBe('0px');
     await ctx.close();
   });
 
@@ -25,6 +33,11 @@ test.describe('Roll Call hero', () => {
     });
     await expect(page.locator('.roll-map path.lit')).toHaveCount(15);
     await expect(page.locator('[data-caller]')).toHaveText(/the people/i);
+    // Act two: the links drew outward, the travelling dots are gone, and it settled.
+    await expect(page.locator('.roll-map')).toHaveClass(/net-done/, {
+      timeout: 6000,
+    });
+    await expect(page.locator('.net-dot')).toHaveCount(0);
     await page.reload();
     await expect(page.locator('html')).not.toHaveAttribute('data-roll', /.+/);
   });
@@ -44,6 +57,9 @@ test.describe('Roll Call hero', () => {
     await page.goto('/');
     await expect(page.locator('html')).not.toHaveAttribute('data-roll', /.+/);
     await expect(page.locator('h1')).toBeVisible();
+    // No travelling dots and no drawing: the network is simply there.
+    await expect(page.locator('.net-dot')).toHaveCount(0);
+    await expect(page.locator('.roll-map')).not.toHaveClass(/net-on/);
     await ctx.close();
   });
 
