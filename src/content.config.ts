@@ -13,14 +13,25 @@ const pages = defineCollection({
 
 const programs = defineCollection({
   loader: glob({ pattern: '*.md', base: './content/programs' }),
-  schema: z.object({
-    title: z.string(),
-    summary: z.string().max(160),
-    order: z.number(),
-    status: z
-      .enum(['founding-priority', 'active', 'paused'])
-      .default('founding-priority'),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      summary: z.string().max(160),
+      order: z.number(),
+      status: z
+        .enum(['founding-priority', 'active', 'paused'])
+        .default('founding-priority'),
+      // Optional photo gallery shown under the text (all people shown have given consent; see content/CONSENT-LOG.md).
+      gallery: z
+        .array(
+          z.object({
+            src: image(),
+            alt: z.string().min(10),
+            caption: z.string().optional(),
+          }),
+        )
+        .optional(),
+    }),
 });
 
 const record = defineCollection({

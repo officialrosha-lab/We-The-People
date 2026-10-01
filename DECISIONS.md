@@ -169,3 +169,7 @@ The owner could not see the one-shot dots (they play once per session and are sm
 ## D28: Partners on the drugs and recovery page
 
 At the owner's request, MOTARWY (name and logo, as supplied) and Freedom Liberia are described under "Partners in this work" on the drugs and recovery page, using the owner's supplied text (emoji, hashtags and the "Join us" appeal removed, wording otherwise kept). Freedom Liberia's phone and email are published as the owner provided them. Nothing was added beyond that text.
+
+## D29: Photo gallery on the drugs and recovery page
+
+The programs collection gained an optional `gallery` (image, alt text, caption), shown under the text as "From the field". Thirty photos from the partners' activities supplied by the owner are listed in `content/programs/drugs-and-recovery.md`. They load only when scrolled near (page Lighthouse 99, LCP 2.0 s). Captions describe only what is visible, with no dates, places or names. Several photos show people in recovery or receiving health care; the owner states full consent, and `content/CONSENT-LOG.md` carries open placeholders asking the owner to confirm it covers each and where the records are kept.
