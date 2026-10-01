@@ -21,7 +21,7 @@ We aim to meet the Web Content Accessibility Guidelines (WCAG) 2.2 at level AA.
 
 ## What is not yet right
 
-- **The video on the 7 August 2025 march story has no captions.** People who cannot hear it cannot follow the speech. The page says so and describes what the video shows. We intend to add captions.
+- **The videos (the introduction on the home page and the speech on the 7 August 2025 march story) have no captions.** People who cannot hear them cannot follow the speech. Each page describes what its video shows. We intend to add captions.
 - **We have not yet tested with screen readers by hand** (such as NVDA or VoiceOver). Automated checks catch many problems but not all. [PLACEHOLDER: date and results of a manual screen-reader test]
 - Some pages still contain marked placeholders where information is yet to be supplied.
 - Confirmation pages for forms are provided by outside services and are not under our control.

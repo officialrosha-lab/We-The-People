@@ -133,3 +133,11 @@ The home page showed one photo and only text elsewhere, while the march photos s
 ## D19: Introduction video on the home page
 
 The owner supplied a 56 s introduction (H.264, 720p, 2.7 MB, so it was only re-packaged with fast-start and metadata stripped, not re-encoded). It sits in its own section after the opening statement, click-to-play with nothing downloaded before play, set from a `video:` block in `content/pages/home.md` (pages schema extended). No captions yet, same stance as D11; the launch check lists it. The speaker's name and role appear only in the video's own caption; the site's text leaves them out until the owner confirms them.
+
+## D20: No on-page "no captions yet" note
+
+The owner asked for the note under the videos ("This video does not have captions yet.") to be removed, along with the matching launch-check lines and test assertions. The player still supports captions when a `.vtt` file is added. The public accessibility statement keeps naming the missing captions, because it must stay accurate.
+
+## D21: Introduction speaker named on the About page
+
+The owner confirmed (2026-10-01) the wording shown in the video's own caption and that full consent is held. The About page now names John A. Ballout Jr. with exactly that role text; other leadership stays a placeholder. Nothing was added beyond what the caption states.

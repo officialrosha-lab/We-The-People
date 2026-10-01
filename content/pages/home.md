@@ -4,7 +4,7 @@ description: "A neutral table where Liberians of every party, faith and backgrou
 video:
   src: /video/intro.mp4
   poster: ../../src/assets/photos/intro-poster.jpg
-  posterAlt: "A bald man in a red shirt sits on a green velvet sofa in a living room, hands clasped, looking into the camera. Curtains and a window are behind him. Later in the video his name and role appear as a caption on screen."
+  posterAlt: "A bald man in a red shirt sits on a green velvet sofa in a living room, hands clasped, looking into the camera. Curtains and a window are behind him. A caption on screen names him as John A. Ballout Jr., Former Senator and Ambassador, Organising Chairman of We The People."
   heading: "Hear it from us"
   title: "An introduction to We The People"
   duration: "56 s"

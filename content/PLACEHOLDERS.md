@@ -12,7 +12,7 @@ Claude Code appends every unresolved placeholder here: file, location, what is n
 | public/mark-placeholder.svg | whole file | Real vector logo (current mark is a stand-in) | Owner / designer |
 | src/pages/*.astro (about, our-work, stories, join, contact, privacy, accessibility) | whole page | Page content; built in Phase 3/4 (legal pages need review) | Owner / legal |
 | content/pages/about.md | Where we come from | Founding date and how the movement began | Owner |
-| content/pages/about.md | People | Founder, spokesperson and leadership names, roles, bios, consent | Owner |
+| content/pages/about.md | People | Other leadership and spokespeople: names, roles, bios, consent (John A. Ballout Jr. is named, wording confirmed by the owner 2026-10-01) | Owner |
 | content/pages/about.md | How we work | Approve the wording of the three principles (interview wording is unverified) | Owner |
 | content/pages/transparency.md | all sections | Governance, registration, funding, policies | Owner / legal |
 | content/pages/contact.md | all sections | Email, phone or WhatsApp, postal address, press contact | Owner |

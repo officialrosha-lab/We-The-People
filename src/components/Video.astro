@@ -49,9 +49,7 @@ const p = await getImage({ src: poster, width: 640, format: 'webp' });
   </video>
   <figcaption>
     {title} ({duration}).
-    {captions
-      ? ' Captions are on by default.'
-      : ' This video does not have captions yet.'}
+    {captions && ' Captions are on by default.'}
   </figcaption>
   <p class="desc">What the video shows: {posterAlt}</p>
   {transcript && (
