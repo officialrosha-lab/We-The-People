@@ -37,7 +37,7 @@ const fmt = new Intl.DateTimeFormat('en-GB', {
               <Content />
               {e.data.sourceUrl && (
                 <p>
-                  <a href={e.data.sourceUrl}>Source</a>
+                  <a href={e.data.sourceUrl}>{e.data.sourceLabel}</a>
                 </p>
               )}
             </div>

@@ -27,3 +27,5 @@ On 18 November 2025 our team and affiliated organisations visited the Old Voker 
 Facilitators spoke with students about the danger drugs pose to young people, and students received leaflets about drugs.
 
 We believe that protecting the future of Liberia takes all of us: parents, students, leaders and communities, working together to keep young people safe and focused.
+
+This story is based on [our post of 18 November 2025](https://www.facebook.com/share/p/1DtP4RjrKs/).

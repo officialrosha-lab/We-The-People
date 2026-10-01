@@ -28,7 +28,8 @@ const record = defineCollection({
   schema: z.object({
     date: z.coerce.date(),
     title: z.string(),
-    sourceUrl: z.url().optional(), // an independent source is required before publishing
+    sourceUrl: z.url().optional(), // an independent source is preferred; own posts must say so in sourceLabel
+    sourceLabel: z.string().default('Source'),
   }),
 });
 
