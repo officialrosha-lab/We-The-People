@@ -61,9 +61,11 @@
     outline-offset: 3px;
   }
   [data-ground='night'] :focus-visible,
-  [data-ground='navy'] :focus-visible,
-  [data-ground='red'] :focus-visible {
+  [data-ground='navy'] :focus-visible {
     outline-color: var(--gold);
+  }
+  [data-ground='red'] :focus-visible {
+    outline-color: var(--white);
   }
   [data-ground='night'] a,
   [data-ground='navy'] a {
@@ -222,6 +224,10 @@
   }
   .site-footer p {
     font-family: var(--font-text);
+  }
+  .footer-h {
+    font-size: var(--step-1);
+    margin-block: var(--s-4) var(--s-2);
   }
   .site-footer ul {
     list-style: none;

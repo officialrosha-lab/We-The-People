@@ -1,0 +1,383 @@
+---
+import { formEndpoint, countyOptions, helpOptions } from '../lib/forms';
+
+interface Props {
+  kind: 'join' | 'contact' | 'event' | 'newsletter';
+  submitLabel: string;
+  /** Extra values sent with the form, e.g. the event title. */
+  extra?: Record<string, string>;
+}
+const { kind, submitLabel, extra = {} } = Astro.props;
+const id = (name: string) => `${kind}-${name}`;
+const success: Record<Props['kind'], string> = {
+  join: 'You have joined the movement.',
+  contact: 'Your message has been sent.',
+  event: 'You are registered.',
+  newsletter: 'Thank you. We have your email address.',
+};
+const privacy: Record<Props['kind'], string> = {
+  join: 'We use your details only to respond to this form.',
+  contact: 'We use your details only to reply to your message.',
+  event: 'We use your details only to organise this event.',
+  newsletter:
+    'We use your email address only to send you updates from the movement.',
+};
+// A mailing-list box that cannot send would only be noise on every page, so hide it until it works.
+const hidden = kind === 'newsletter' && !formEndpoint;
+const nextStep: Record<Props['kind'], string> = {
+  join: 'We will contact you at',
+  contact: 'We will reply to',
+  event: 'We will contact you at',
+  newsletter: '',
+};
+---
+
+{hidden ? null : (
+  <div class="af" data-kind={kind}>
+    {!formEndpoint && (
+      <p class="af-notice" role="note">
+        This form is not accepting submissions yet. [PLACEHOLDER: the form
+        endpoint has not been configured]
+      </p>
+    )}
+    <form
+      method="post"
+      action={formEndpoint || undefined}
+      novalidate
+      data-action-form
+      data-endpoint={formEndpoint}
+      data-success={success[kind]}
+      data-next={nextStep[kind]}
+    >
+      <input type="hidden" name="form" value={kind} />
+      {Object.entries(extra).map(([k, v]) => (
+        <input type="hidden" name={k} value={v} />
+      ))}
+
+      {/* Honeypot: people never see or reach this; bots fill it in. */}
+      <div class="af-trap" aria-hidden="true">
+        <label>
+          Leave this empty{' '}
+          <input type="text" name="website" tabindex="-1" autocomplete="off" />
+        </label>
+      </div>
+
+      {kind !== 'newsletter' && (
+        <div class="af-field">
+          <label for={id('name')}>Name</label>
+          <input
+            id={id('name')}
+            name="name"
+            type="text"
+            autocomplete="name"
+            required
+            data-required="Enter your name."
+          />
+          <p class="af-error" id={id('name-error')} hidden />
+        </div>
+      )}
+
+      <div class="af-field">
+        <label for={id('contact')}>
+          {kind === 'newsletter' ? 'Email' : 'Email or phone'}
+        </label>
+        <input
+          id={id('contact')}
+          name="contact"
+          type={kind === 'newsletter' ? 'email' : 'text'}
+          inputmode={kind === 'newsletter' ? 'email' : undefined}
+          autocomplete={kind === 'newsletter' ? 'email' : undefined}
+          required
+          data-contact={kind === 'newsletter' ? 'email' : 'any'}
+        />
+        <p class="af-error" id={id('contact-error')} hidden />
+      </div>
+
+      {(kind === 'join' || kind === 'event') && (
+        <div class="af-field">
+          <label for={id('county')}>County</label>
+          <select
+            id={id('county')}
+            name="county"
+            autocomplete="address-level1"
+            required
+            data-required="Choose your county."
+          >
+            <option value="">Choose a county</option>
+            {countyOptions.map((c) => (
+              <option value={c}>{c}</option>
+            ))}
+          </select>
+          <p class="af-help" id={id('county-help')}>
+            Pick the county where you live. Pick "Outside Liberia" if you live
+            abroad.
+          </p>
+          <p class="af-error" id={id('county-error')} hidden />
+        </div>
+      )}
+
+      {kind === 'join' && (
+        <fieldset class="af-field">
+          <legend>How do you want to help?</legend>
+          {helpOptions.map((o) => (
+            <label class="af-check">
+              <input type="checkbox" name="help" value={o.value} />
+              <span>{o.label}</span>
+            </label>
+          ))}
+        </fieldset>
+      )}
+
+      {kind === 'contact' && (
+        <div class="af-field">
+          <label for={id('message')}>Message</label>
+          <textarea
+            id={id('message')}
+            name="message"
+            rows="6"
+            required
+            data-required="Write your message."
+          />
+          <p class="af-error" id={id('message-error')} hidden />
+        </div>
+      )}
+
+      <button class="btn" type="submit" disabled={!formEndpoint}>
+        {submitLabel}
+      </button>
+      <p class="af-status" role="status" aria-live="polite" data-status></p>
+    </form>
+    <p class="af-privacy">
+      {privacy[kind]}{' '}
+      <a href="/privacy/">Read how we handle your information</a>.
+    </p>
+  </div>
+)}
+
+<script>
+  const MSG = {
+    contact: 'Enter an email address or a phone number so we can reach you.',
+    email: 'Enter a valid email address, for example name@example.org.',
+    phone: 'That phone number has too few digits. Check it and try again.',
+    network:
+      'We could not send your form. Check your connection and press Send again.',
+  };
+
+  const showError = (
+    form: HTMLFormElement,
+    field: HTMLElement,
+    text: string,
+  ) => {
+    const err = form.querySelector<HTMLElement>(`#${field.id}-error`);
+    if (!err) return;
+    err.textContent = text;
+    err.hidden = false;
+    field.setAttribute('aria-invalid', 'true');
+    field.setAttribute('aria-describedby', err.id);
+  };
+  const clearErrors = (form: HTMLFormElement) => {
+    form.querySelectorAll<HTMLElement>('.af-error').forEach((e) => {
+      e.hidden = true;
+      e.textContent = '';
+    });
+    form.querySelectorAll('[aria-invalid]').forEach((f) => {
+      f.removeAttribute('aria-invalid');
+      f.removeAttribute('aria-describedby');
+    });
+  };
+
+  const validate = (form: HTMLFormElement): HTMLElement | null => {
+    let first: HTMLElement | null = null;
+    const fail = (field: HTMLElement, text: string) => {
+      showError(form, field, text);
+      first ??= field;
+    };
+    form.querySelectorAll<HTMLInputElement>('[data-required]').forEach((f) => {
+      if (!f.value.trim()) fail(f, f.dataset.required ?? '');
+    });
+    const contact = form.querySelector<HTMLInputElement>('[data-contact]');
+    if (contact) {
+      const v = contact.value.trim();
+      if (!v) fail(contact, MSG.contact);
+      else if (v.includes('@')) {
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) fail(contact, MSG.email);
+      } else if (contact.dataset.contact === 'email') fail(contact, MSG.email);
+      else if (v.replace(/\D/g, '').length < 7) fail(contact, MSG.phone);
+    }
+    return first;
+  };
+
+  document
+    .querySelectorAll<HTMLFormElement>('form[data-action-form]')
+    .forEach((form) => {
+      const endpoint = form.dataset.endpoint ?? '';
+      const status = form.querySelector<HTMLElement>('[data-status]');
+      const button = form.querySelector<HTMLButtonElement>(
+        'button[type=submit]',
+      );
+      let sending = false;
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!endpoint || sending) return;
+        clearErrors(form);
+        if (status) status.textContent = '';
+        const bad = validate(form);
+        if (bad) {
+          bad.focus();
+          return;
+        }
+        const data = new FormData(form);
+        if (data.get('website')) return; // honeypot filled: silently drop
+        sending = true;
+        const label = button?.textContent ?? '';
+        if (button) {
+          button.disabled = true;
+          button.textContent = 'Sending';
+        }
+        try {
+          const res = await fetch(endpoint, {
+            method: 'POST',
+            body: data,
+            headers: { Accept: 'application/json' },
+          });
+          if (!res.ok) throw new Error(String(res.status));
+          const to = String(data.get('contact') ?? '');
+          const next = form.dataset.next;
+          const panel = document.createElement('div');
+          panel.className = 'af-success';
+          panel.setAttribute('role', 'status');
+          panel.tabIndex = -1;
+          const p = document.createElement('p');
+          p.textContent = `${form.dataset.success ?? 'Sent.'}${next ? ` ${next} ${to}.` : ''}`;
+          panel.append(p);
+          form.replaceWith(panel);
+          panel.focus();
+        } catch {
+          if (status) status.textContent = MSG.network;
+          if (button) {
+            button.disabled = false;
+            button.textContent = label;
+          }
+          sending = false;
+        }
+      });
+    });
+</script>
+
+<style is:global>
+  .af-field {
+    margin: 0 0 var(--s-4);
+    padding: 0;
+    border: 0;
+    max-inline-size: 32rem;
+  }
+  .af label,
+  .af legend {
+    display: block;
+    margin-block-end: var(--s-1);
+    padding: 0;
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: var(--step-0);
+  }
+  .af input[type='text'],
+  .af input[type='email'],
+  .af select,
+  .af textarea {
+    display: block;
+    inline-size: 100%;
+    min-block-size: 48px;
+    padding: var(--s-2) var(--s-3);
+    border: 2px solid var(--night);
+    border-radius: var(--radius-pill);
+    background: var(--white);
+    color: var(--night);
+    font: inherit;
+    font-family: var(--font-ui);
+  }
+  .af textarea {
+    border-radius: var(--radius-block);
+  }
+  .af [aria-invalid='true'] {
+    border-color: var(--red);
+    outline: 2px solid var(--red);
+  }
+  .af .af-check {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-block-size: 44px;
+    margin: 0;
+    font-weight: 500;
+  }
+  .af .af-check input {
+    inline-size: 24px;
+    block-size: 24px;
+    flex: none;
+    accent-color: var(--night);
+  }
+  .af-help {
+    margin: var(--s-1) 0 0;
+    font-family: var(--font-ui);
+    font-size: var(--step--1);
+    color: var(--fg-muted);
+  }
+  .af-error {
+    margin: var(--s-1) 0 0;
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: var(--step--1);
+    color: var(--red);
+  }
+  [data-ground='red'] .af-error {
+    color: var(--white);
+  }
+  [data-ground='red'] .af [aria-invalid='true'] {
+    border-color: var(--night);
+    outline-color: var(--white);
+  }
+  [data-ground='night'] .af-error {
+    color: var(--red-tint);
+  }
+  [data-ground='night'] .af-help {
+    color: var(--muted-light);
+  }
+  .af-trap {
+    position: absolute;
+    inset-inline-start: -10000px;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+  }
+  .af-status {
+    margin: var(--s-3) 0 0;
+    font-family: var(--font-ui);
+    font-weight: 600;
+  }
+  .af-notice {
+    padding: var(--s-3);
+    border: 2px solid currentColor;
+    font-family: var(--font-ui);
+    font-weight: 600;
+  }
+  .af-success {
+    padding: var(--s-4);
+    border: 2px solid currentColor;
+    font-family: var(--font-ui);
+    font-weight: 600;
+    max-inline-size: 32rem;
+  }
+  .af-success p {
+    margin: 0;
+  }
+  .af-privacy {
+    margin-block-start: var(--s-3);
+    font-family: var(--font-ui);
+    font-size: var(--step--1);
+  }
+  .af button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+</style>

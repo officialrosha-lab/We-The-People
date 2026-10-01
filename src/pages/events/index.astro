@@ -1,0 +1,82 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import { loadEvents, fmtDate, fmtTime } from '../../lib/events';
+const { upcoming, past } = await loadEvents();
+---
+
+<Base
+  title="Events"
+  description="Meetings and events of We The People Movement across Liberia's fifteen counties."
+  ground="night"
+>
+  <PageHeader title="Events" />
+  <section class="section">
+    <div class="wrap">
+      <h2>Upcoming</h2>
+      {upcoming.length === 0 ? (
+        <div class="prose">
+          <p>No events are scheduled. Check back soon or join to hear first.</p>
+          <p>
+            <a class="btn" href="/join/">
+              Join the movement
+            </a>
+          </p>
+        </div>
+      ) : (
+        <ul class="rows">
+          {upcoming.map((e) => (
+            <li>
+              <time datetime={e.data.start.toISOString()}>
+                {fmtDate.format(e.data.start)}, {fmtTime.format(e.data.start)}
+              </time>
+              <h3>
+                <a href={`/events/${e.id}/`}>{e.data.title}</a>
+              </h3>
+              <p>{e.data.place}</p>
+            </li>
+          ))}
+        </ul>
+      )}
+      {past.length > 0 && (
+        <>
+          <h2>Past events</h2>
+          <ul class="rows">
+            {past.map((e) => (
+              <li>
+                <time datetime={e.data.start.toISOString()}>
+                  {fmtDate.format(e.data.start)}
+                </time>
+                <h3>
+                  <a href={`/events/${e.id}/`}>{e.data.title}</a>
+                </h3>
+                <p>{e.data.place}</p>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .rows {
+    list-style: none;
+    margin: 0 0 var(--s-5);
+    padding: 0;
+  }
+  .rows li {
+    border-block-start: 1px solid var(--muted);
+    padding-block: var(--s-4);
+  }
+  .rows h3 {
+    margin-block-end: var(--s-1);
+  }
+  time {
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--fg-muted);
+  }
+</style>

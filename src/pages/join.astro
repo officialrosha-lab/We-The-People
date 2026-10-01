@@ -1,6 +1,7 @@
 ---
 import { getEntry } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import ActionForm from '../components/ActionForm.astro';
 const page = await getEntry('pages', 'join');
 if (!page) throw new Error('content/pages/join.md is missing');
 ---
@@ -10,23 +11,21 @@ if (!page) throw new Error('content/pages/join.md is missing');
     <div class="wrap">
       <h1>Join the movement</h1>
       <p class="lead">{page.body}</p>
-      <p>
-        [PLACEHOLDER: join form (name, email or phone, county, how you want to
-        help). Built in Phase 4.]
-      </p>
+      <ActionForm kind="join" submitLabel="Join the movement" />
     </div>
   </section>
   <section class="section">
     <div class="wrap prose">
       <h2>What happens after you join</h2>
       <p>
-        [PLACEHOLDER: what the movement does with a new member's details and how
-        soon someone makes contact]
+        We contact you using the email address or phone number you gave.
+        [PLACEHOLDER: how soon, and who contacts you]
       </p>
       <h2>Your information</h2>
       <p>
-        [PLACEHOLDER: privacy in plain words: what we collect, why, who sees it,
-        how to be removed. Needs legal review.]
+        We ask for your name, a way to reach you and your county, so that we can
+        put you in touch with the people near you. [PLACEHOLDER: who sees it,
+        how long it is kept, how to be removed; needs legal review]
       </p>
     </div>
   </section>

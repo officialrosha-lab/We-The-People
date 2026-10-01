@@ -41,3 +41,14 @@ Payments, CMS editor choice, languages, hosting budget, positioning (docs/01c op
 ## D7. No CMS (owner direction, supersedes D6 CMS note)
 
 Plain website with all information about We The People. Content is Markdown/YAML files in `content/`, edited in the repo. No CMS, no editor login, no admin.
+
+## D8. Forms without a backend (Phase 4)
+
+- Out of scope by owner direction: petition tools, payments, Give.
+- All forms (join, contact, event registration, newsletter) are plain HTML `<form method="post">` posting to one hosted form endpoint set in `PUBLIC_FORM_ENDPOINT` (build-time env var). Provider not chosen (Formspree, Web3Forms, Getform or similar all accept this shape). No server code, no database, no accounts, no login.
+- Without the variable the forms render disabled with an honest notice; they never pretend to send.
+- With JS: validate, send with `fetch`, show success or error inline. Without JS: the browser posts to the endpoint; the provider shows its own confirmation page (set its redirect to `/thanks/`).
+- Spam: hidden honeypot field plus the provider's rate limiting. No CAPTCHA, so assistive technology is not blocked.
+- Newsletter: double opt-in and one-click unsubscribe must be provided by the provider or email platform; this site cannot enforce them. Copy promises nothing beyond "we have your address". Flagged for the owner and legal review.
+- Events: Markdown files in `content/events/`. Upcoming versus past is decided at build time, so the site needs a rebuild at least daily once events exist (scheduled deploy). Times are Africa/Monrovia (UTC+0, no daylight saving). Each event also gets a generated `.ics` file for "Add to calendar".
+- Campaign template: not built; it needs live totals or progress, which only make sense with the petition and payment tools that are out of scope.

@@ -54,4 +54,29 @@ const stories = defineCollection({
   }),
 });
 
-export const collections = { pages, programs, record, counties, stories };
+// Times are Africa/Monrovia (UTC+0). Registration is offered only when `registration: true`.
+const events = defineCollection({
+  // EVENTS_DIR lets tests build against fixtures; production uses content/events.
+  loader: glob({
+    pattern: '*.md',
+    base: process.env.EVENTS_DIR ?? './content/events',
+  }),
+  schema: z.object({
+    title: z.string(),
+    summary: z.string().max(160),
+    start: z.coerce.date(),
+    end: z.coerce.date().optional(),
+    place: z.string(),
+    county: z.string().optional(),
+    registration: z.boolean().default(false),
+  }),
+});
+
+export const collections = {
+  pages,
+  programs,
+  record,
+  counties,
+  stories,
+  events,
+};
