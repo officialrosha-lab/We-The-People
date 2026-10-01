@@ -45,7 +45,16 @@ const counties = defineCollection({
 // Stories are published only with documented consent (content/CONSENT-LOG.md).
 // `images` are in src/assets/photos; the first is the lead photo. Every image needs honest alt text.
 const stories = defineCollection({
-  loader: glob({ pattern: '*.md', base: './content/stories' }),
+  // STORIES_FIXTURES adds test-only stories (never set in production). The base is the repository root so the
+  // fixtures folder is reachable; ids are the file names, so story URLs are unchanged.
+  loader: glob({
+    pattern: [
+      'content/stories/*.md',
+      ...(process.env.STORIES_FIXTURES ? [process.env.STORIES_FIXTURES] : []),
+    ],
+    base: '.',
+    generateId: ({ entry }) => entry.replace(/^.*\//, '').replace(/\.md$/, ''),
+  }),
   schema: ({ image }) =>
     z.object({
       title: z.string(),
@@ -54,6 +63,19 @@ const stories = defineCollection({
       byline: z.string(),
       county: z.string().optional(),
       consent: z.literal(true),
+      // A video is published only with reviewed captions (WebVTT) and a transcript. Files live in public/video.
+      video: z
+        .object({
+          src: z.string().startsWith('/video/'),
+          poster: image(),
+          posterAlt: z.string().min(10),
+          captions: z.string().startsWith('/video/').endsWith('.vtt'),
+          transcript: z.string().min(40),
+          title: z.string(),
+          duration: z.string(),
+          captionsReviewed: z.literal(true),
+        })
+        .optional(),
       images: z
         .array(
           z.object({

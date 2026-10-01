@@ -69,3 +69,12 @@ Plain website with all information about We The People. Content is Markdown/YAML
 - Why not a silent success: a form that says "You have joined" while sending nowhere would mislead visitors and lose real sign-ups. The honest message costs nothing and disappears once an address is pasted.
 - `PUBLIC_FORMSPREE_ENDPOINT` and `PUBLIC_BREVO_FORM_URL` still exist as optional overrides, used only by the automated tests so they can build with test addresses. The owner never sets them; `.env.example` is removed.
 - Without JavaScript an unconnected form cannot post anywhere, so it shows "This form needs JavaScript until it is switched on."
+  \n
+
+## D11. Video policy
+
+- A video is published only with reviewed WebVTT captions and a transcript. The content schema enforces it (`captionsReviewed: true`), so an uncaptioned video cannot build.
+- Click to play: `preload="none"`, a poster, no autoplay, no sound until pressed. Source files are compressed to about 450 kbps video and 56 kbps mono audio (about 6 MB for 90 seconds), with metadata stripped.
+- Unreviewed video files live in `assets/video-pending/`, outside `public/`, so they are never served by accident.
+- Machine transcripts are not used as captions: a trial on the march speech misheard the speech and invented claims about the speaker.
+- The legal name is "We The People, Inc." (owner, 2026-10-01); the movement is known as the We The People Movement. The footer and Transparency page say so; registration details remain placeholders.

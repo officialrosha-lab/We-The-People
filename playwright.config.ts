@@ -4,7 +4,7 @@ import { defineConfig } from '@playwright/test';
 // and fixture events. The tests intercept every request to them, so nothing reaches either service.
 // Production builds use neither.
 const env =
-  'PUBLIC_FORMSPREE_ENDPOINT=https://formspree.io/f/testform PUBLIC_BREVO_FORM_URL=https://test.sibforms.com/serve/testform EVENTS_DIR=./tests/fixtures/events';
+  'PUBLIC_FORMSPREE_ENDPOINT=https://formspree.io/f/testform PUBLIC_BREVO_FORM_URL=https://test.sibforms.com/serve/testform EVENTS_DIR=./tests/fixtures/events STORIES_FIXTURES=tests/fixtures/stories/*.md';
 
 export default defineConfig({
   testDir: 'tests',

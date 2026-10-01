@@ -169,3 +169,10 @@ Nothing built yet. Questions: see "Blocking" above. One batch only: logo files, 
 **What this changes for the site:** the movement's most visible public action is a march against drugs, under "Protect our youth, save our future". That supports leading with the neutral, development-and-youth framing already used on the home page, and it gives the Drugs and recovery priority real, dated evidence. The July 2025 governance protest and this August drugs march are separate events; both are on the Record.
 **Choices:** six photos chosen to show the banner, the date sign, the rain, the speakers and the press; no one in the photos is named; the aerial photo is excluded because of its third-party watermark; close-ups of individuals are excluded; the quote "community by community, school by school, street by street" is the statement's own words and is not attributed to a named person.
 **Open:** consent for this batch (provisional), photographer credit, the legal name "We The People, Inc.", partner organisations' approval to be named, independent coverage. All logged.
+\n
+
+## Video, legal name and consent (2026-10-01)
+
+**Consent:** the owner confirmed the same consent applies to the march photos; logged as confirmed. **Legal name:** "We The People, Inc." confirmed; shown in the footer and on Transparency.
+**Video:** built the click-to-play player (poster, captions track on by default, transcript under a disclosure, no autoplay) and a schema rule that refuses a video without reviewed captions. The owner's 90-second march-speech video is compressed (24 MB to 5.8 MB) and held back in `assets/video-pending/` because there are no captions yet and the machine transcript was unreliable. A sharp poster frame was chosen by measuring frame sharpness (the first frame tried was motion-blurred).
+**Tests:** 64 passing, including fixture stories (loaded only in tests) proving the player is click-to-play, has default English captions and a transcript, passes axe with the transcript open, and that the real video is not on the page and not served.

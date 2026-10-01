@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Photo from '../../components/Photo.astro';
+import Video from '../../components/Video.astro';
 
 export async function getStaticPaths() {
   const stories = await getCollection('stories');
@@ -45,6 +46,14 @@ const fmt = new Intl.DateTimeFormat('en-GB', {
         <Content />
       </div>
     </section>
+    {story.data.video && (
+      <section class="section">
+        <div class="wrap video-wrap">
+          <h2>Watch</h2>
+          <Video {...story.data.video} />
+        </div>
+      </section>
+    )}
     {more.length > 0 && (
       <section class="section">
         <div class="wrap gallery">
@@ -70,6 +79,9 @@ const fmt = new Intl.DateTimeFormat('en-GB', {
 </Base>
 
 <style>
+  .video-wrap {
+    max-inline-size: 960px;
+  }
   .head h1 {
     text-transform: none;
     font-size: var(--step-4);
