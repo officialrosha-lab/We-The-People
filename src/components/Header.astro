@@ -1,5 +1,6 @@
 ---
 import { url } from '../lib/url';
+const here = Astro.url.pathname.replace(/\/$/, '');
 const links = [
   { href: url('/about/'), label: 'About' },
   { href: url('/our-work/'), label: 'Our work' },
@@ -29,7 +30,17 @@ const links = [
       <ul>
         {links.map((l) => (
           <li>
-            <a href={l.href}>{l.label}</a>
+            <a
+              href={l.href}
+              aria-current={
+                here === l.href.replace(/\/$/, '') ||
+                here.startsWith(l.href.replace(/\/$/, '') + '/')
+                  ? 'page'
+                  : undefined
+              }
+            >
+              {l.label}
+            </a>
           </li>
         ))}
       </ul>

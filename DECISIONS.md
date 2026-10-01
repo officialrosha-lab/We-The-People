@@ -145,3 +145,7 @@ The owner confirmed (2026-10-01) the wording shown in the video's own caption an
 ## D22: Introduction video removed
 
 At the owner's request the introduction video, its description and poster were removed from the home page and the repository (D19 no longer applies; the pages schema no longer has a `video` block). The About page still names the speaker, with the wording the owner confirmed.
+
+## D23: Look-and-feel refinement inside the locked design
+
+The palette, type, Roll Call hero and the rules in docs/design (square blocks, pill buttons only, no shadows, no gradients, no arrows, no all-caps labels) stay. Refined: buttons are larger and bolder with a flat darker edge (a border, not a shadow) that sinks when pressed, and a quiet outlined variant for secondary actions (`.btn-quiet`, used in the hero); list rows are whole-row links with a gold marker on hover or focus; Record rows read as a ledger with the date in its own column; the current page is marked in the header (gold bar and `aria-current`); the footer is split into two columns under a red rule. Considered and rejected: gold glows, gradient buttons and numbered markers (generic, and the content is not a sequence). New token: `--red-deep`.

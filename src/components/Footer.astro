@@ -7,12 +7,16 @@ const neutrality = await getEntry('pages', 'neutrality');
 
 <footer class="section site-footer" data-ground="night">
   <div class="wrap">
-    <p>
-      <strong>We The People Movement</strong>
-    </p>
-    {neutrality && <p>{neutrality.body}</p>}
-    <h2 class="footer-h">Get updates</h2>
-    <ActionForm kind="newsletter" submitLabel="Subscribe" />
+    <div>
+      <p>
+        <strong>We The People Movement</strong>
+      </p>
+      {neutrality && <p>{neutrality.body}</p>}
+    </div>
+    <div>
+      <h2 class="footer-h">Get updates</h2>
+      <ActionForm kind="newsletter" submitLabel="Subscribe" />
+    </div>
     <ul>
       <li>
         <a href={url('/record/')}>Record</a>
