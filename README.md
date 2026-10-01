@@ -9,6 +9,8 @@ npm run build    # static output in dist/, plus the search index (Pagefind)
 npm run check    # type check
 npm run test:e2e # accessibility, behaviour and SEO tests (set CHROMIUM_PATH if needed)
 npm run lighthouse # mobile Lighthouse on key pages; needs `npm run preview` running and CHROME_PATH set
+npm run launch-check # what still blocks going public
+npm run smoke -- https://your-domain # test the live site after deploying
 ```
 
 Forms: Join, Contact and Event registration post to Formspree and the newsletter to Brevo. Paste each service's address into `src/lib/forms.ts` (see `docs/13-form-integrations.md`). Until then the forms show and validate, and Send says nothing was sent.
@@ -17,3 +19,5 @@ Content lives in `content/` (Markdown). Unresolved items are listed in `content/
 
 Search works only on a built site (`npm run build && npm run preview`), not in `npm run dev`.
 Security headers are in `public/_headers` (Netlify and Cloudflare Pages format). The production domain goes in `astro.config.mjs` (`site`); sitemap, robots.txt, canonical and share-image addresses all follow it.
+
+Launching or handing over: `docs/14-launch-runbook.md`, `docs/15-editor-guide.md`, `docs/16-legal-review-pack.md`, `docs/17-handover.md`.

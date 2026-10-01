@@ -91,3 +91,11 @@ Plain website with all information about We The People. Content is Markdown/YAML
 - **Fonts (Phase 5):** only Latin and Latin Extended subsets are shipped (own `@font-face` in `src/styles/fonts.css`); the body serif uses the weight-only Source Serif 4 file (51 KB instead of 122 KB; the optical-size axis is given up); both main fonts are preloaded. Result: about 70 KB less per page and no layout shift from font swapping. Reversible: swap the file names in `fonts.css` and `Base.astro`.
 - **Photos (Phase 5):** AVIF and WebP at quality 60, four widths, and the lead photo of each story is preloaded in the exact AVIF variant the browser will choose.
 - **Performance gate:** `npm run lighthouse` (`scripts/lighthouse.mjs`) fails if any of 12 key pages scores under 95 in any category, has LCP over 2.5 s or CLS over 0.1, on Lighthouse's simulated slow 4G with a slowed CPU. CI runs it after a clean production build.
+
+## D13. Launch approach (Phase 6)
+
+- **No deployment was done by the builder.** The host, domain and the Formspree and Brevo accounts do not exist yet, and they must belong to the owner. Phase 6 therefore delivers the tools and documents to launch safely: `npm run launch-check` (lists blockers), `npm run smoke -- <url>` (tests the live site), `netlify.toml`, a nightly-rebuild workflow that needs one secret, and the runbook, editor guide, legal pack and handover (`docs/14` to `docs/17`).
+- **The smoke test was verified both ways:** against a local copy built with a real-looking address, test form addresses and the headers file applied, it passes every check; against the current build it fails exactly the real gaps (placeholder address, headers not applied by the preview server, forms unconnected).
+- **Dependency hygiene:** `mapshaper` (six known vulnerabilities in its own dependencies) was removed; the map it produced is already saved, and the rebuild script fetches it on demand. `npm audit` now reports 0 vulnerabilities, including developer tools.
+- **Editing model:** no CMS; editors change Markdown files on GitHub through pull requests, with a host preview before each change goes live. `docs/15` is written for non-developers.
+- **The launch check is a gate for people, not for CI:** it fails while blockers exist, which is correct before launch, so CI does not run it.

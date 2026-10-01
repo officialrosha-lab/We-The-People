@@ -1,5 +1,7 @@
 // Builds src/data/liberia-map.json (county paths) from Natural Earth admin-1 (public domain).
-// Run: node scripts/build-map.mjs   (needs mapshaper, installed as a dev dependency)
+// Run: node scripts/build-map.mjs. The simplified result is already saved in src/data/liberia-map.json, so this is only
+// needed to regenerate the map. mapshaper is fetched on demand by npx and deliberately not installed (it carried known
+// vulnerabilities in its dependencies, and nothing that ships to visitors uses it).
 import { execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 

@@ -42,3 +42,6 @@ Claude Code appends every unresolved placeholder here: file, location, what is n
 | content/pages/accessibility.md | statement | Date and result of a manual screen-reader test; the contact for accessibility requests; add captions to the march video and remove the note about it | Owner |
 | content/pages/press.md | contact, logos, fact sheet | Spokesperson and contact; downloadable logos (needs a vector logo); fact-sheet facts the movement approves; terms for press use of photos | Owner |
 | public/og-default.png | image | Replace with a version using the real logo when it exists (`node scripts/build-og.mjs`) | Owner / designer |
+| docs/17-handover.md | accounts, costs, people | Names of the account owners, monthly costs, technical contact, uptime alert contact, privacy-request contact, lawyer and review date | Owner |
+| Host and domain | not created | Choose the host, buy or confirm the domain, point DNS, set the nightly-rebuild secret `DEPLOY_HOOK_URL` in GitHub (docs/14) | Owner |
+| Real devices | not tested | A low-end Android phone, Safari on iPhone, Firefox, and a screen reader (NVDA or VoiceOver) pass; record the result in the accessibility statement | Owner / volunteers |

@@ -1,0 +1,8 @@
+# Netlify build settings. Cloudflare Pages and other static hosts: use the same build command and output folder.
+# Headers and caching come from public/_headers (no extra setup). No environment variables are needed.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
