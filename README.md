@@ -1,17 +1,13 @@
-# We The People
+# We The People Movement website
 
-> We the People of the United States, in Order to form a more perfect Union, establish Justice, insure domestic Tranquility, provide for the common defence, promote the general Welfare, and secure the Blessings of Liberty to ourselves and our Posterity, do ordain and establish this Constitution for the United States of America.
+Static website built with Astro. Read `CLAUDE.md`, `DECISIONS.md` and `docs/` first.
 
-## About
+```
+npm install
+npm run dev      # local dev server
+npm run build    # static output in dist/
+npm run check    # type check
+npm run test:e2e # axe accessibility tests (set CHROMIUM_PATH if needed)
+```
 
-This repository is a starting point for the **We The People** project. Details to come.
-
-## Getting Started
-
-1. Clone the repository
-2. Add your project files
-3. Update this README to describe the project
-
-## Contributing
-
-Contributions are welcome. Open an issue or pull request to get started.
+Content lives in `content/` (Markdown). Unresolved items are listed in `content/PLACEHOLDERS.md`.

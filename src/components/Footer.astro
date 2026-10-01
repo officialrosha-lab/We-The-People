@@ -1,0 +1,28 @@
+---
+import { getEntry } from 'astro:content';
+const neutrality = await getEntry('pages', 'neutrality');
+---
+
+<footer class="section site-footer" data-ground="night">
+  <div class="wrap">
+    <p>
+      <strong>We The People Movement</strong>
+    </p>
+    {neutrality && <p>{neutrality.body}</p>}
+    <ul>
+      <li>
+        <a href="/contact/">Contact</a>
+      </li>
+      <li>
+        <a href="/privacy/">Privacy</a>
+      </li>
+      <li>
+        <a href="/accessibility/">Accessibility</a>
+      </li>
+    </ul>
+    <p>
+      [PLACEHOLDER: legal registration, address, funding statement, social
+      links]
+    </p>
+  </div>
+</footer>

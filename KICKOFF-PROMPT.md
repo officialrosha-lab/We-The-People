@@ -3,6 +3,7 @@
 You are the design lead and lead engineer for the We The People Movement website. Read, in order: `CLAUDE.md`, `docs/01-org-brief.md`, `docs/01a`, `01b`, `01c`, `docs/12-open-questions.md`, then every file in `docs/design/`, then `docs/02` to `docs/11`.
 
 Phase 0 only:
+
 1. Summarize what you understand in 10 lines. List assumptions and every `[FILL]` that blocks design.
 2. Review `docs/design/01-design-plan.md` against the generic-defaults table. State what you would change and why.
 3. Produce three hero concepts (the Roll Call is the default) as short written sketches with ASCII wireframes. Recommend one.
