@@ -1,0 +1,78 @@
+---
+import { getEntry, getCollection, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+const page = await getEntry('pages', 'record');
+if (!page) throw new Error('content/pages/record.md is missing');
+const entries = (await getCollection('record')).sort(
+  (a, b) => a.data.date.getTime() - b.data.date.getTime(),
+);
+const rendered = await Promise.all(
+  entries.map(async (e) => ({ e, Content: (await render(e)).Content })),
+);
+const fmt = new Intl.DateTimeFormat('en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+---
+
+<Base
+  title={page.data.title}
+  description={page.data.description}
+  ground="night"
+>
+  <PageHeader title="Record" intro={page.body} />
+  <section class="section" data-ground="night">
+    <div class="wrap">
+      <ol class="timeline">
+        {rendered.map(({ e, Content }) => (
+          <li>
+            <time datetime={e.data.date.toISOString().slice(0, 10)}>
+              {fmt.format(e.data.date)}
+            </time>
+            <div>
+              <h2>{e.data.title}</h2>
+              <Content />
+              {e.data.sourceUrl && (
+                <p>
+                  <a href={e.data.sourceUrl}>Source</a>
+                </p>
+              )}
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .timeline li {
+    display: grid;
+    gap: var(--s-2);
+    border-block-start: 1px solid var(--muted-light);
+    padding-block: var(--s-4);
+  }
+  time {
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--fg-muted);
+  }
+  .timeline h2 {
+    font-size: var(--step-2);
+  }
+  @media (min-width: 900px) {
+    .timeline li {
+      grid-template-columns: 1fr 3fr;
+      gap: var(--s-5);
+    }
+  }
+</style>

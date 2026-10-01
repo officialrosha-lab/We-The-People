@@ -1,0 +1,51 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+export async function getStaticPaths() {
+  const stories = await getCollection('stories');
+  return stories.map((s) => ({ params: { slug: s.id }, props: { story: s } }));
+}
+const { story } = Astro.props;
+const { Content } = await render(story);
+const fmt = new Intl.DateTimeFormat('en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+---
+
+<Base title={story.data.title} description={story.data.summary}>
+  <article class="section">
+    <div class="wrap prose">
+      <h1>{story.data.title}</h1>
+      <p class="meta">
+        {story.data.byline},{' '}
+        <time datetime={story.data.date.toISOString().slice(0, 10)}>
+          {fmt.format(story.data.date)}
+        </time>
+      </p>
+      <div class="body">
+        <Content />
+      </div>
+      <p>
+        <a class="btn" href="/join/">
+          Join the movement
+        </a>
+      </p>
+    </div>
+  </article>
+</Base>
+
+<style>
+  h1 {
+    text-transform: none;
+    font-size: var(--step-3);
+    font-stretch: 90%;
+  }
+  .meta {
+    font-family: var(--font-ui);
+    color: var(--fg-muted);
+  }
+</style>

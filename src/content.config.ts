@@ -32,4 +32,26 @@ const record = defineCollection({
   }),
 });
 
-export const collections = { pages, programs, record };
+// One file per county, only when the owner provides real branch information.
+const counties = defineCollection({
+  loader: glob({ pattern: '*.md', base: './content/counties' }),
+  schema: z.object({
+    branchStatus: z.enum(['active', 'forming']),
+    contact: z.string().optional(),
+  }),
+});
+
+// Stories are published only with documented consent (content/CONSENT-LOG.md).
+const stories = defineCollection({
+  loader: glob({ pattern: '*.md', base: './content/stories' }),
+  schema: z.object({
+    title: z.string(),
+    summary: z.string().max(160),
+    date: z.coerce.date(),
+    byline: z.string(),
+    county: z.string().optional(),
+    consent: z.literal(true),
+  }),
+});
+
+export const collections = { pages, programs, record, counties, stories };

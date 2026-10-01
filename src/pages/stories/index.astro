@@ -1,0 +1,76 @@
+---
+import { getEntry, getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+const page = await getEntry('pages', 'stories');
+if (!page) throw new Error('content/pages/stories.md is missing');
+const stories = (await getCollection('stories')).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+const fmt = new Intl.DateTimeFormat('en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+---
+
+<Base
+  title={page.data.title}
+  description={page.data.description}
+  ground="night"
+>
+  <PageHeader title="Stories" intro={page.body} />
+  <section class="section">
+    <div class="wrap">
+      {stories.length === 0 ? (
+        <div class="prose">
+          <p>
+            No stories are published yet. Check back soon, or join to hear
+            first.
+          </p>
+          <p>
+            <a class="btn" href="/join/">
+              Join the movement
+            </a>
+          </p>
+        </div>
+      ) : (
+        <ul class="list">
+          {stories.map((s) => (
+            <li>
+              <time datetime={s.data.date.toISOString().slice(0, 10)}>
+                {fmt.format(s.data.date)}
+              </time>
+              <h2>
+                <a href={`/stories/${s.id}/`}>{s.data.title}</a>
+              </h2>
+              <p>{s.data.summary}</p>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .list li {
+    border-block-start: 1px solid var(--muted);
+    padding-block: var(--s-4);
+  }
+  .list h2 {
+    font-size: var(--step-2);
+  }
+  time {
+    font-family: var(--font-ui);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    color: var(--fg-muted);
+  }
+</style>

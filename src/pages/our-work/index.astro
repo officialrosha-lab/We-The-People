@@ -1,0 +1,51 @@
+---
+import { getEntry, getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+const page = await getEntry('pages', 'our-work');
+if (!page) throw new Error('content/pages/our-work.md is missing');
+const programs = (await getCollection('programs')).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<Base
+  title={page.data.title}
+  description={page.data.description}
+  ground="night"
+>
+  <PageHeader title="Our work" intro={page.body} />
+  <section class="section">
+    <div class="wrap">
+      <ul class="rows">
+        {programs.map((p) => (
+          <li>
+            <h2>
+              <a href={`/our-work/${p.id}/`}>{p.data.title}</a>
+            </h2>
+            <p>{p.data.summary}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .rows {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .rows li {
+    border-block-start: 1px solid var(--muted);
+    padding-block: var(--s-4);
+  }
+  .rows h2 {
+    font-size: var(--step-3);
+    margin-block-end: var(--s-1);
+  }
+  .rows a {
+    color: var(--heading);
+  }
+</style>

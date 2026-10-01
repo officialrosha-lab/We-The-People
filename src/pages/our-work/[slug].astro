@@ -1,0 +1,40 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+
+export async function getStaticPaths() {
+  const programs = await getCollection('programs');
+  return programs.map((p) => ({
+    params: { slug: p.id },
+    props: { program: p },
+  }));
+}
+const { program } = Astro.props;
+const { Content } = await render(program);
+---
+
+<Base
+  title={program.data.title}
+  description={program.data.summary}
+  ground="night"
+>
+  <PageHeader title={program.data.title} intro={program.data.summary} />
+  <section class="section">
+    <div class="wrap prose">
+      <Content />
+    </div>
+  </section>
+  <section class="section" data-ground="night">
+    <div class="wrap">
+      <p>
+        <a href="/our-work/">All of our work</a>
+      </p>
+      <p>
+        <a class="btn" href="/join/">
+          Join the movement
+        </a>
+      </p>
+    </div>
+  </section>
+</Base>

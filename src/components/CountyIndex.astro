@@ -1,0 +1,92 @@
+---
+import { counties, paths, viewBox } from '../lib/counties';
+---
+
+<div class="ci">
+  <ul class="ci-list">
+    {counties.map((c) => (
+      <li>
+        <a href={`/counties/${c.slug}/`} data-county={c.id}>
+          {c.name}
+        </a>
+      </li>
+    ))}
+  </ul>
+  <svg class="ci-map" viewBox={viewBox} aria-hidden="true" focusable="false">
+    {paths.map((p) => (
+      <path id={`ci-${p.id}`} d={p.d} />
+    ))}
+  </svg>
+</div>
+
+<script>
+  const map = document.querySelector('.ci-map');
+  const on = (e: Event) => {
+    const a = (e.target as Element).closest<HTMLAnchorElement>(
+      'a[data-county]',
+    );
+    map?.querySelectorAll('.on').forEach((p) => p.classList.remove('on'));
+    if (a) map?.querySelector(`#ci-${a.dataset.county}`)?.classList.add('on');
+  };
+  document.querySelector('.ci-list')?.addEventListener('pointerover', on);
+  document.querySelector('.ci-list')?.addEventListener('focusin', on);
+  document.querySelector('.ci-list')?.addEventListener('pointerleave', on);
+  document.querySelector('.ci-list')?.addEventListener('focusout', on);
+</script>
+
+<style>
+  .ci {
+    display: grid;
+    gap: var(--s-5);
+  }
+  .ci-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-stretch: 62%;
+    text-transform: uppercase;
+    font-size: var(--step-3);
+    line-height: 1.1;
+  }
+  .ci-list a {
+    display: block;
+    padding-block: var(--s-1);
+    color: var(--fg);
+    text-decoration: none;
+    min-block-size: 44px;
+  }
+  .ci-list a:hover,
+  .ci-list a:focus-visible {
+    color: var(--red);
+  }
+  .ci-map {
+    display: none;
+  }
+  .ci-map path {
+    fill: none;
+    stroke: color-mix(in srgb, var(--night) 40%, transparent);
+    stroke-width: 2;
+    transition: fill var(--dur-1) var(--ease);
+  }
+  .ci-map path.on {
+    fill: var(--red);
+  }
+  @media (min-width: 900px) {
+    .ci {
+      grid-template-columns: 7fr 5fr;
+      align-items: start;
+    }
+    .ci-list {
+      columns: 2;
+      column-gap: var(--s-5);
+    }
+    .ci-map {
+      display: block;
+      inline-size: 100%;
+      position: sticky;
+      inset-block-start: var(--s-4);
+    }
+  }
+</style>

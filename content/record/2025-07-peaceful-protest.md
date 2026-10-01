@@ -1,5 +1,5 @@
 ---
 date: 2025-07-15
-title: Nationwide three-day peaceful protest, 15 to 17 July, notified to the Ministry of Justice with the coalition STAND
+title: "The movement and its coalition partners notify the Ministry of Justice of a nationwide, three-day peaceful protest (15 to 17 July)"
 ---
-Source: [PLACEHOLDER: link to independent coverage; re-check against the primary source before publishing]
+The notice cited the right to peaceful assembly under Article 17 of the 1986 Constitution. The movement acted with the civil-society coalition STAND (Solidarity and Trust for a New Day) and other grassroots groups. [PLACEHOLDER: source link to independent coverage; re-check against the primary source before publishing]

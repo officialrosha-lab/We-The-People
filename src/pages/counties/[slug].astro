@@ -1,0 +1,107 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { counties, paths, viewBox } from '../../lib/counties';
+
+export function getStaticPaths() {
+  return counties.map((c) => ({
+    params: { slug: c.slug },
+    props: { county: c },
+  }));
+}
+const { county } = Astro.props;
+const info = await getEntry('counties', county.slug);
+const stories = (await getCollection('stories')).filter(
+  (s) => s.data.county === county.name,
+);
+const status = info
+  ? info.data.branchStatus === 'active'
+    ? 'Branch active'
+    : 'Branch forming'
+  : null;
+---
+
+<Base
+  title={`${county.name} County`}
+  description={`What We The People Movement is doing in ${county.name} County, and how to join.`}
+>
+  <section class="section">
+    <div class="wrap county-head">
+      <h1>{county.name}</h1>
+      <svg viewBox={viewBox} aria-hidden="true" focusable="false">
+        {paths.map((p) => (
+          <path d={p.d} class:list={{ here: p.id === county.id }} />
+        ))}
+      </svg>
+    </div>
+  </section>
+  <section class="section" data-ground="night">
+    <div class="wrap prose">
+      <h2>Branch</h2>
+      {status ? (
+        <p>
+          {status}. {info?.data.contact}
+        </p>
+      ) : (
+        <p>
+          [PLACEHOLDER: branch status and contact for {county.name} County;
+          supplied by the owner]
+        </p>
+      )}
+      <h2>Local activities</h2>
+      <p>[PLACEHOLDER: activities in {county.name} County]</p>
+      {stories.length > 0 && (
+        <>
+          <h2>Stories from {county.name}</h2>
+          <ul>
+            {stories.map((s) => (
+              <li>
+                <a href={`/stories/${s.id}/`}>{s.data.title}</a>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+      <p>
+        <a class="btn" href="/join/">
+          Join the movement
+        </a>
+      </p>
+      <p>
+        <a href="/counties/">All fifteen counties</a>
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .county-head {
+    display: grid;
+    gap: var(--s-4);
+    align-items: center;
+  }
+  h1 {
+    font-size: clamp(3rem, 1.5rem + 9vw, 9rem);
+    font-stretch: 62%;
+    font-weight: 900;
+    overflow-wrap: anywhere;
+  }
+  svg {
+    inline-size: 100%;
+    max-block-size: 45vh;
+  }
+  path {
+    fill: none;
+    stroke: color-mix(in srgb, var(--night) 40%, transparent);
+    stroke-width: 2;
+  }
+  path.here {
+    fill: var(--navy);
+    stroke: var(--navy);
+  }
+  @media (min-width: 900px) {
+    .county-head {
+      grid-template-columns: 7fr 5fr;
+    }
+  }
+</style>

@@ -2,11 +2,21 @@
 import { getEntry, getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import RollCall from '../components/RollCall.astro';
+import CountyIndex from '../components/CountyIndex.astro';
 const home = await getEntry('pages', 'home');
 if (!home) throw new Error('content/pages/home.md is missing');
 const programs = (await getCollection('programs')).sort(
   (a, b) => a.data.order - b.data.order,
 );
+const record = (await getCollection('record')).sort(
+  (a, b) => a.data.date.getTime() - b.data.date.getTime(),
+);
+const fmt = new Intl.DateTimeFormat('en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
 ---
 
 <Base
@@ -29,11 +39,50 @@ const programs = (await getCollection('programs')).sort(
       <ul class="rows">
         {programs.map((p) => (
           <li>
-            <h3>{p.data.title}</h3>
+            <h3>
+              <a href={`/our-work/${p.id}/`}>{p.data.title}</a>
+            </h3>
             <p>{p.data.summary}</p>
           </li>
         ))}
       </ul>
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap">
+      <h2>Find your county</h2>
+      <CountyIndex />
+    </div>
+  </section>
+  <section class="section" data-ground="night">
+    <div class="wrap">
+      <h2>The record</h2>
+      <ul class="rows">
+        {record.map((e) => (
+          <li>
+            <time datetime={e.data.date.toISOString().slice(0, 10)}>
+              {fmt.format(e.data.date)}
+            </time>
+            <h3>{e.data.title}</h3>
+          </li>
+        ))}
+      </ul>
+      <p>
+        <a href="/record/">Read the full record</a>
+      </p>
+    </div>
+  </section>
+  <section class="section" data-ground="red">
+    <div class="wrap cta">
+      <h2>The table is open</h2>
+      <p>
+        Membership is open to everybody. You do not have to leave your party.
+      </p>
+      <p>
+        <a class="btn" href="/join/">
+          Join the movement
+        </a>
+      </p>
     </div>
   </section>
 </Base>
@@ -46,7 +95,7 @@ const programs = (await getCollection('programs')).sort(
   }
   .rows {
     list-style: none;
-    margin: 0;
+    margin: 0 0 var(--s-4);
     padding: 0;
   }
   .rows li {
@@ -55,5 +104,20 @@ const programs = (await getCollection('programs')).sort(
   }
   .rows h3 {
     margin-block-end: var(--s-1);
+  }
+  .rows h3 a {
+    color: var(--heading);
+  }
+  time {
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--fg-muted);
+  }
+  .cta {
+    text-align: center;
+  }
+  .cta p {
+    margin-inline: auto;
   }
 </style>

@@ -96,7 +96,7 @@ const names = map.counties.map((c) => c.name);
     addEventListener('wheel', end, { passive: true });
     addEventListener('touchmove', end, { passive: true });
 
-    const STEP = 270;
+    const STEP = 340; // under 3 name changes per second (WCAG 2.3.1)
     const START = 400;
     caller.textContent = '';
     paths.forEach((path, i) => {
@@ -111,14 +111,14 @@ const names = map.counties.map((c) => c.name);
         ),
       );
     });
-    const done = START + paths.length * STEP; // about 4.4s
+    const done = START + paths.length * STEP; // about 5.5s
     timers.push(
       window.setTimeout(() => {
         root.dataset.roll = 'called';
         caller.textContent = final;
       }, done),
     );
-    timers.push(window.setTimeout(end, done + 800)); // about 5.2s: headline and actions fade in
+    timers.push(window.setTimeout(end, done + 800)); // about 6.3s: headline and actions fade in
   }
 </script>
 

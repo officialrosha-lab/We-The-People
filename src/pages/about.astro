@@ -1,12 +1,31 @@
 ---
+import { getEntry, render } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+const page = await getEntry('pages', 'about');
+if (!page) throw new Error('content/pages/about.md is missing');
+const neutrality = await getEntry('pages', 'neutrality');
+const { Content } = await render(page);
 ---
 
-<Base title="About" description="[PLACEHOLDER: meta description for About]">
+<Base
+  title={page.data.title}
+  description={page.data.description}
+  ground="night"
+>
+  <PageHeader
+    title="About"
+    intro="A neutral table where Liberians work on what affects ordinary people."
+  />
   <section class="section">
-    <div class="wrap">
-      <h1>About</h1>
-      <p>[PLACEHOLDER: this page is built in a later phase]</p>
+    <div class="wrap prose">
+      <Content />
+    </div>
+  </section>
+  <section class="section" data-ground="night">
+    <div class="wrap prose">
+      <h2>Neutrality</h2>
+      <p>{neutrality?.body}</p>
     </div>
   </section>
 </Base>

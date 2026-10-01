@@ -2863,7 +2863,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "name": "River Cess", "id": "county-river-cess" },
+      "properties": { "name": "Rivercess", "id": "county-rivercess" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [

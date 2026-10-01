@@ -1,7 +1,22 @@
 ---
-title: Drugs and recovery
-summary: Rehabilitation across the country and community response to drugs.
+title: "Drugs and recovery"
+summary: "Rehabilitation across the country and community response to drugs."
 order: 1
 status: founding-priority
 ---
-Drugs are a national urgency, and recovery services are needed in every county. [PLACEHOLDER: what the movement is doing now]
+
+## The problem
+
+We call drug use, including cocaine, a national urgency that is reaching young people across the country.
+
+## What we aim to do
+
+Rehabilitation centers across the country, and contributions of money, time and effort from communities to help government respond. [PLACEHOLDER: how communities can raise drug concerns safely; needs anonymity, moderation and legal review before publishing]
+
+## What has happened
+
+[PLACEHOLDER: what the movement has done so far, with dates and sources]
+
+## How to help
+
+[PLACEHOLDER: the specific ways to help with this priority]
