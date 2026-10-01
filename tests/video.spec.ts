@@ -60,9 +60,17 @@ test.describe('the march speech video', () => {
   test('is published, click-to-play, and says plainly that it has no captions yet', async ({
     page,
   }) => {
-    const media: string[] = [];
-    page.on('request', (r) => {
-      if (r.url().endsWith('/video/march-speech.mp4')) media.push(r.url());
+    // Some browsers (Safari's engine) probe the start of a video file even when told not to preload it. That is
+    // harmless; downloading the whole file (5.8 MB) before anyone presses play is not. So measure bytes, not requests.
+    const probes: string[] = [];
+    let bytes = 0;
+    page.on('response', (r) => {
+      if (!r.url().endsWith('/video/march-speech.mp4')) return;
+      const len = Number(r.headers()['content-length'] ?? 0);
+      bytes += len;
+      probes.push(
+        `${r.status()} ${len} bytes, range: ${r.request().headers()['range'] ?? 'none'}`,
+      );
     });
     await page.goto(march, { waitUntil: 'networkidle' });
     const video = page.locator('video');
@@ -76,7 +84,10 @@ test.describe('the march speech video', () => {
       page.locator('figcaption', { hasText: 'does not have captions yet' }),
     ).toBeVisible();
     await expect(page.getByText('What the video shows:')).toBeVisible();
-    expect(media).toHaveLength(0); // nothing downloads until someone presses play
+    expect(
+      bytes,
+      `video bytes fetched before play: ${probes.join(' | ') || 'none'}`,
+    ).toBeLessThan(500_000);
   });
 
   test('the video file is served and plays as H.264 mp4', async ({

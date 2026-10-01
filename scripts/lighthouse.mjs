@@ -51,7 +51,25 @@ for (const path of pages) {
   );
   const bad =
     Object.values(s).some((v) => v < MIN) || lcp > MAX_LCP || cls > 0.1;
-  if (bad) failed++;
+  if (bad) {
+    failed++;
+    // Say what the page downloaded, biggest first, so a failure can be understood from the CI log alone.
+    const reqs = (lhr.audits['network-requests'].details?.items ?? [])
+      .filter((r) => r.transferSize > 1500)
+      .sort((a, b) => b.transferSize - a.transferSize)
+      .slice(0, 9);
+    for (const r of reqs)
+      console.log(
+        `       ${String(Math.round(r.transferSize / 1024)).padStart(4)} KB  starts ${String(Math.round(r.networkRequestTime)).padStart(5)} ms  ${r.url.replace(base, '').slice(0, 80)}`,
+      );
+    const lcpNode = lhr.audits['lcp-breakdown-insight']?.details?.items?.find(
+      (i) => i.type === 'node',
+    );
+    if (lcpNode)
+      console.log(
+        `       LCP element: ${String(lcpNode.snippet).slice(0, 120)}`,
+      );
+  }
   console.log(
     `${bad ? 'FAIL' : 'ok  '} ${path.padEnd(42)} perf ${s.performance} a11y ${s.accessibility} bp ${s['best-practices']} seo ${s.seo} | LCP ${lcp} ms CLS ${cls.toFixed(3)} ${kb} KB`,
   );
