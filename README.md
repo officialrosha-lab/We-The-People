@@ -10,6 +10,6 @@ npm run check    # type check
 npm run test:e2e # axe accessibility tests (set CHROMIUM_PATH if needed)
 ```
 
-Forms: Join, Contact and Event registration post to Formspree and the newsletter to Brevo. Set `PUBLIC_FORMSPREE_ENDPOINT` and `PUBLIC_BREVO_FORM_URL` where the site is built (see `.env.example` and `docs/13-form-integrations.md`). Until they are set, the forms are disabled and the newsletter box is hidden.
+Forms: Join, Contact and Event registration post to Formspree and the newsletter to Brevo. Paste each service's address into `src/lib/forms.ts` (see `docs/13-form-integrations.md`). Until then the forms show and validate, and Send says nothing was sent.
 
 Content lives in `content/` (Markdown). Unresolved items are listed in `content/PLACEHOLDERS.md`.

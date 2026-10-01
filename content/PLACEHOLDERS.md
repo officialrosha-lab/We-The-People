@@ -26,7 +26,7 @@ Claude Code appends every unresolved placeholder here: file, location, what is n
 | src/pages/join.astro | "What happens after you join" | How soon and who contacts a new member | Owner |
 | src/components/ActionForm.astro | privacy lines under each form | Legal review of the one-line privacy statements; they promise use "only" for the stated purpose | Owner / legal |
 | content/events/ (empty) | one file per event | Real events: title, summary, start (UTC, same as Monrovia time), place, optional end, county, `registration: true` to open sign-up | Owner |
-| Formspree account | `PUBLIC_FORMSPREE_ENDPOINT` | Create the form, set the notification inbox and the redirect to `/thanks/`, copy the endpoint into the build environment (docs/13) | Owner |
-| Brevo account | `PUBLIC_BREVO_FORM_URL` | Create the list and sign-up form with double confirmation on, share as Simple HTML, copy the action URL, set sender name and address (docs/13) | Owner |
+| Formspree account | `FORMSPREE_URL` in src/lib/forms.ts | Create the form, set the notification inbox and the redirect to `/thanks/`, paste its address into `FORMSPREE_URL` (docs/13). Until then Send says nothing was sent | Owner |
+| Brevo account | `BREVO_FORM_URL` in src/lib/forms.ts | Create the list and sign-up form with double confirmation on, share as Simple HTML, paste its action URL into `BREVO_FORM_URL`, set sender name and address (docs/13) | Owner |
 | Brevo emails | sender, footer, unsubscribe | Registered organisation details for the email footer and a working unsubscribe link | Owner / legal |
 | Privacy policy | processors | Name Formspree and Brevo as processors and where they store data | Owner / legal |

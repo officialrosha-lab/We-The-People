@@ -61,3 +61,11 @@ Plain website with all information about We The People. Content is Markdown/YAML
 - Build guard: each variable must be an `https` URL on `formspree.io` or `sibforms.com` (or a subdomain); anything else fails the build, so a pasted wrong URL cannot send people's details to another host. Both values are public in the HTML, so no secret may be placed in them. A Brevo API key must never be used in the browser; none is needed.
 - Setup steps for the owner: `docs/13-form-integrations.md`.
 - Both providers are processors of personal data (names, contact details, counties). The privacy policy must name them and say where they store data; flagged for legal review.
+
+## D10. No environment variables for forms (owner direction; amends D9)
+
+- The two service addresses are constants at the top of `src/lib/forms.ts` (`FORMSPREE_URL`, `BREVO_FORM_URL`), pasted in and committed. Both are public by nature, so committing them is safe; no secret may ever go there. The domain guard still applies to whatever is pasted.
+- Forms are always visible and enabled. With an empty address, Send validates, then shows "This form is not switched on yet. Nothing was sent." and makes no request. This replaces the disabled button, the "not accepting submissions" notice and the hidden newsletter box.
+- Why not a silent success: a form that says "You have joined" while sending nowhere would mislead visitors and lose real sign-ups. The honest message costs nothing and disappears once an address is pasted.
+- `PUBLIC_FORMSPREE_ENDPOINT` and `PUBLIC_BREVO_FORM_URL` still exist as optional overrides, used only by the automated tests so they can build with test addresses. The owner never sets them; `.env.example` is removed.
+- Without JavaScript an unconnected form cannot post anywhere, so it shows "This form needs JavaScript until it is switched on."

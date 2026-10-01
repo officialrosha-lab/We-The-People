@@ -343,3 +343,51 @@ test.describe('axe on form states', () => {
     expect(r.violations).toEqual([]);
   });
 });
+
+test.describe('form not connected yet', () => {
+  test('a valid form says nothing was sent and sends nothing', async ({
+    page,
+  }) => {
+    const formspree = await mock(page);
+    await page.goto('/join/');
+    // Simulate a build with no Formspree address pasted into src/lib/forms.ts.
+    await page.evaluate(() => {
+      document
+        .querySelectorAll<HTMLFormElement>('form[data-action-form]')
+        .forEach((f) => (f.dataset.endpoint = ''));
+    });
+    await page.fill('#join-name', 'Test Person');
+    await page.fill('#join-contact', 'test@example.org');
+    await page.selectOption('#join-county', 'Lofa');
+    const button = page
+      .getByRole('button', { name: 'Join the movement', exact: true })
+      .last();
+    await expect(button).toBeEnabled();
+    await button.click();
+    await expect(page.locator('[data-status]').first()).toHaveText(
+      'This form is not switched on yet. Nothing was sent.',
+    );
+    await expect(page.getByText('You have joined')).toHaveCount(0);
+    expect(formspree).toHaveLength(0);
+    await expect(page.locator('#join-name')).toHaveValue('Test Person');
+  });
+
+  test('invalid input is still caught before the not-connected message', async ({
+    page,
+  }) => {
+    await page.goto('/join/');
+    await page.evaluate(() => {
+      document
+        .querySelectorAll<HTMLFormElement>('form[data-action-form]')
+        .forEach((f) => (f.dataset.endpoint = ''));
+    });
+    await page
+      .getByRole('button', { name: 'Join the movement', exact: true })
+      .last()
+      .click();
+    await expect(page.locator('#join-name-error')).toHaveText(
+      'Enter your name.',
+    );
+    await expect(page.getByText('not switched on')).toHaveCount(0);
+  });
+});

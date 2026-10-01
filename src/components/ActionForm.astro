@@ -37,8 +37,6 @@ const subject: Record<Props['kind'], string> = {
   event: 'Website: event registration',
   newsletter: '',
 };
-// A mailing-list box that cannot send would only be noise on every page, so hide it until it works.
-const hidden = isNews && !endpoint;
 const nextStep: Record<Props['kind'], string> = {
   join: 'We will contact you at',
   contact: 'We will reply to',
@@ -47,149 +45,148 @@ const nextStep: Record<Props['kind'], string> = {
 };
 ---
 
-{hidden ? null : (
-  <div class="af" data-kind={kind}>
-    {!endpoint && (
-      <p class="af-notice" role="note">
-        This form is not accepting submissions yet. [PLACEHOLDER: the form
-        endpoint has not been configured]
-      </p>
+<div class="af" data-kind={kind}>
+  <form
+    method="post"
+    action={endpoint || undefined}
+    novalidate
+    data-action-form
+    data-endpoint={endpoint}
+    data-mode={isNews ? 'brevo' : 'formspree'}
+    data-success={success[kind]}
+    data-next={nextStep[kind]}
+  >
+    {isNews ? (
+      <>
+        <input type="hidden" name="locale" value="en" />
+        <input type="hidden" name="html_type" value="simple" />
+      </>
+    ) : (
+      <>
+        <input type="hidden" name="form" value={kind} />
+        <input type="hidden" name="_subject" value={subject[kind]} />
+      </>
     )}
-    <form
-      method="post"
-      action={endpoint || undefined}
-      novalidate
-      data-action-form
-      data-endpoint={endpoint}
-      data-mode={isNews ? 'brevo' : 'formspree'}
-      data-success={success[kind]}
-      data-next={nextStep[kind]}
-    >
-      {isNews ? (
-        <>
-          <input type="hidden" name="locale" value="en" />
-          <input type="hidden" name="html_type" value="simple" />
-        </>
-      ) : (
-        <>
-          <input type="hidden" name="form" value={kind} />
-          <input type="hidden" name="_subject" value={subject[kind]} />
-        </>
-      )}
-      {Object.entries(extra).map(([k, v]) => (
-        <input type="hidden" name={k} value={v} />
-      ))}
+    {Object.entries(extra).map(([k, v]) => (
+      <input type="hidden" name={k} value={v} />
+    ))}
 
-      {/* Honeypot: people never see or reach this; bots fill it in. */}
-      <div class="af-trap" aria-hidden="true">
-        <label>
-          Leave this empty{' '}
-          <input
-            type="text"
-            name={isNews ? 'email_address_check' : '_gotcha'}
-            tabindex="-1"
-            autocomplete="off"
-          />
-        </label>
-      </div>
-
-      {kind !== 'newsletter' && (
-        <div class="af-field">
-          <label for={id('name')}>Name</label>
-          <input
-            id={id('name')}
-            name="name"
-            type="text"
-            autocomplete="name"
-            required
-            data-required="Enter your name."
-          />
-          <p class="af-error" id={id('name-error')} hidden />
-        </div>
-      )}
-
-      <div class="af-field">
-        <label for={id('contact')}>
-          {kind === 'newsletter' ? 'Email' : 'Email or phone'}
-        </label>
+    {/* Honeypot: people never see or reach this; bots fill it in. */}
+    <div class="af-trap" aria-hidden="true">
+      <label>
+        Leave this empty{' '}
         <input
-          id={id('contact')}
-          name={isNews ? 'EMAIL' : 'contact'}
-          type={kind === 'newsletter' ? 'email' : 'text'}
-          inputmode={kind === 'newsletter' ? 'email' : undefined}
-          autocomplete={kind === 'newsletter' ? 'email' : undefined}
-          required
-          data-contact={kind === 'newsletter' ? 'email' : 'any'}
+          type="text"
+          name={isNews ? 'email_address_check' : '_gotcha'}
+          tabindex="-1"
+          autocomplete="off"
         />
-        <p class="af-error" id={id('contact-error')} hidden />
+      </label>
+    </div>
+
+    {kind !== 'newsletter' && (
+      <div class="af-field">
+        <label for={id('name')}>Name</label>
+        <input
+          id={id('name')}
+          name="name"
+          type="text"
+          autocomplete="name"
+          required
+          data-required="Enter your name."
+        />
+        <p class="af-error" id={id('name-error')} hidden />
       </div>
+    )}
 
-      {(kind === 'join' || kind === 'event') && (
-        <div class="af-field">
-          <label for={id('county')}>County</label>
-          <select
-            id={id('county')}
-            name="county"
-            autocomplete="address-level1"
-            required
-            data-required="Choose your county."
-          >
-            <option value="">Choose a county</option>
-            {countyOptions.map((c) => (
-              <option value={c}>{c}</option>
-            ))}
-          </select>
-          <p class="af-help" id={id('county-help')}>
-            Pick the county where you live. Pick "Outside Liberia" if you live
-            abroad.
-          </p>
-          <p class="af-error" id={id('county-error')} hidden />
-        </div>
-      )}
+    <div class="af-field">
+      <label for={id('contact')}>
+        {kind === 'newsletter' ? 'Email' : 'Email or phone'}
+      </label>
+      <input
+        id={id('contact')}
+        name={isNews ? 'EMAIL' : 'contact'}
+        type={kind === 'newsletter' ? 'email' : 'text'}
+        inputmode={kind === 'newsletter' ? 'email' : undefined}
+        autocomplete={kind === 'newsletter' ? 'email' : undefined}
+        required
+        data-contact={kind === 'newsletter' ? 'email' : 'any'}
+      />
+      <p class="af-error" id={id('contact-error')} hidden />
+    </div>
 
-      {kind === 'join' && (
-        <fieldset class="af-field">
-          <legend>How do you want to help?</legend>
-          {helpOptions.map((o) => (
-            <label class="af-check">
-              <input type="checkbox" name="help" value={o.value} />
-              <span>{o.label}</span>
-            </label>
+    {(kind === 'join' || kind === 'event') && (
+      <div class="af-field">
+        <label for={id('county')}>County</label>
+        <select
+          id={id('county')}
+          name="county"
+          autocomplete="address-level1"
+          required
+          data-required="Choose your county."
+        >
+          <option value="">Choose a county</option>
+          {countyOptions.map((c) => (
+            <option value={c}>{c}</option>
           ))}
-        </fieldset>
-      )}
+        </select>
+        <p class="af-help" id={id('county-help')}>
+          Pick the county where you live. Pick "Outside Liberia" if you live
+          abroad.
+        </p>
+        <p class="af-error" id={id('county-error')} hidden />
+      </div>
+    )}
 
-      {kind === 'contact' && (
-        <div class="af-field">
-          <label for={id('message')}>Message</label>
-          <textarea
-            id={id('message')}
-            name="message"
-            rows="6"
-            required
-            data-required="Write your message."
-          />
-          <p class="af-error" id={id('message-error')} hidden />
-        </div>
-      )}
+    {kind === 'join' && (
+      <fieldset class="af-field">
+        <legend>How do you want to help?</legend>
+        {helpOptions.map((o) => (
+          <label class="af-check">
+            <input type="checkbox" name="help" value={o.value} />
+            <span>{o.label}</span>
+          </label>
+        ))}
+      </fieldset>
+    )}
 
-      <button class="btn" type="submit" disabled={!endpoint}>
-        {submitLabel}
-      </button>
-      <p class="af-status" role="status" aria-live="polite" data-status></p>
-    </form>
-    <p class="af-privacy">
-      {privacy[kind]}{' '}
-      <a href="/privacy/">Read how we handle your information</a>.
-    </p>
-  </div>
-)}
+    {kind === 'contact' && (
+      <div class="af-field">
+        <label for={id('message')}>Message</label>
+        <textarea
+          id={id('message')}
+          name="message"
+          rows="6"
+          required
+          data-required="Write your message."
+        />
+        <p class="af-error" id={id('message-error')} hidden />
+      </div>
+    )}
+
+    <button class="btn" type="submit">
+      {submitLabel}
+    </button>
+    <p class="af-status" role="status" aria-live="polite" data-status></p>
+  </form>
+  {!endpoint && (
+    <noscript>
+      <p class="af-status">
+        This form needs JavaScript until it is switched on.
+      </p>
+    </noscript>
+  )}
+  <p class="af-privacy">
+    {privacy[kind]} <a href="/privacy/">Read how we handle your information</a>.
+  </p>
+</div>
 
 <script>
   const MSG = {
     contact: 'Enter an email address or a phone number so we can reach you.',
     email: 'Enter a valid email address, for example name@example.org.',
     phone: 'That phone number has too few digits. Check it and try again.',
+    notConnected: 'This form is not switched on yet. Nothing was sent.',
     network:
       'We could not send your form. Check your connection and press Send again.',
   };
@@ -241,7 +238,6 @@ const nextStep: Record<Props['kind'], string> = {
   document
     .querySelectorAll<HTMLFormElement>('form[data-action-form]')
     .forEach((form) => {
-      const endpoint = form.dataset.endpoint ?? '';
       const status = form.querySelector<HTMLElement>('[data-status]');
       const button = form.querySelector<HTMLButtonElement>(
         'button[type=submit]',
@@ -250,12 +246,18 @@ const nextStep: Record<Props['kind'], string> = {
 
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        if (!endpoint || sending) return;
+        if (sending) return;
+        const endpoint = form.dataset.endpoint ?? '';
         clearErrors(form);
         if (status) status.textContent = '';
         const bad = validate(form);
         if (bad) {
           bad.focus();
+          return;
+        }
+        if (!endpoint) {
+          // Not connected to Formspree or Brevo yet: be honest instead of pretending the details were sent.
+          if (status) status.textContent = MSG.notConnected;
           return;
         }
         const data = new FormData(form);

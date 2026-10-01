@@ -1,7 +1,6 @@
 ---
 import { getEntry } from 'astro:content';
 import ActionForm from './ActionForm.astro';
-import { newsletterEndpoint } from '../lib/forms';
 const neutrality = await getEntry('pages', 'neutrality');
 ---
 
@@ -11,7 +10,7 @@ const neutrality = await getEntry('pages', 'neutrality');
       <strong>We The People Movement</strong>
     </p>
     {neutrality && <p>{neutrality.body}</p>}
-    {newsletterEndpoint && <h2 class="footer-h">Get updates</h2>}
+    <h2 class="footer-h">Get updates</h2>
     <ActionForm kind="newsletter" submitLabel="Subscribe" />
     <ul>
       <li>

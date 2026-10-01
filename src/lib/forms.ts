@@ -1,15 +1,35 @@
 import { counties } from './counties';
 
 /**
- * Reads a third-party endpoint from the environment and refuses anything that is not HTTPS on the expected
- * provider's domain. A mistyped or pasted URL would otherwise send people's details to the wrong place.
+ * THIRD-PARTY FORM ADDRESSES: paste them here, between the quotes. No other setting is needed.
+ *
+ *  - FORMSPREE_URL receives Join, Contact and Event registration. Looks like https://formspree.io/f/xxxxxxxx
+ *  - BREVO_FORM_URL receives newsletter sign-ups. It is the action URL of a Brevo sign-up form
+ *    (with double confirmation on). Looks like https://xxxxxxxx.sibforms.com/serve/xxxxxxxx
+ *
+ * Both values are public (they end up in the page HTML), so never paste an API key or secret here.
+ * While a value is empty the form still shows and validates, but pressing Send says nothing was sent.
+ * Steps for each service: docs/13-form-integrations.md.
  */
-function endpoint(name: string, host: string): string {
-  const value = (import.meta.env[name] ?? '').trim();
-  if (!value) return '';
+const FORMSPREE_URL = '';
+const BREVO_FORM_URL = '';
+
+/**
+ * Accepts only an https address on the expected provider's domain, so a mistyped or pasted wrong URL fails the
+ * build instead of sending people's details somewhere else. `override` exists only so automated tests can use
+ * test addresses; the owner never needs it.
+ */
+function checked(
+  name: string,
+  value: string,
+  override: string | undefined,
+  host: string,
+): string {
+  const v = (override || value).trim();
+  if (!v) return '';
   let url: URL;
   try {
-    url = new URL(value);
+    url = new URL(v);
   } catch {
     throw new Error(`${name} is not a valid URL.`);
   }
@@ -20,15 +40,17 @@ function endpoint(name: string, host: string): string {
   return url.toString();
 }
 
-/** Formspree receives the join, contact and event registration forms. Empty means those forms are disabled. */
-export const formEndpoint: string = endpoint(
-  'PUBLIC_FORMSPREE_ENDPOINT',
+export const formEndpoint: string = checked(
+  'FORMSPREE_URL',
+  FORMSPREE_URL,
+  import.meta.env.PUBLIC_FORMSPREE_ENDPOINT,
   'formspree.io',
 );
 
-/** Brevo receives newsletter sign-ups. Empty means the footer newsletter box is hidden. */
-export const newsletterEndpoint: string = endpoint(
-  'PUBLIC_BREVO_FORM_URL',
+export const newsletterEndpoint: string = checked(
+  'BREVO_FORM_URL',
+  BREVO_FORM_URL,
+  import.meta.env.PUBLIC_BREVO_FORM_URL,
   'sibforms.com',
 );
 

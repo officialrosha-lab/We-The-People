@@ -143,3 +143,10 @@ Nothing built yet. Questions: see "Blocking" above. One batch only: logo files, 
 **Honest limits:** neither integration has been tried against a live account. Tests intercept every request to both providers, so they prove the payloads and the interface, not delivery. A real test submission on the live site is a launch blocker (docs/13, "Before launch").
 **Tried and fixed:** none of the previous tests broke; the new build guard was verified against a foreign domain, plain `http`, and a look-alike domain (`formspree.io.evil.example`).
 **Tests:** 46 passing, including Brevo field names and content type, the Brevo honeypot, "newsletter never posts to Formspree", Formspree `Accept` header, subject, reply-to email, empty `_gotcha`, and "a phone number is not sent as a reply-to".
+
+## Phase 4 follow-up 2 (2026-10-01): forms always shown, no settings
+
+**Changed:** removed the disabled button, the "not accepting submissions" notice and the hidden newsletter box. Forms are always visible and enabled. The two addresses are plain constants in `src/lib/forms.ts`. With an empty address Send validates, then says "This form is not switched on yet. Nothing was sent." and sends nothing.
+**Checked on a plain build with no variables:** the newsletter form appears on every page; no button has a disabled attribute; Join and Newsletter both showed the not-switched-on message with zero POST requests; axe: 0 violations on home, join, contact and events.
+**Tests:** 48 passing, including a valid form making no request and not claiming success, and invalid input still being caught first.
+**Open:** until real addresses are pasted in, visitors who press Send are told nothing was sent. That is accurate but means no sign-ups are collected; connecting the accounts before the site is public avoids it.
