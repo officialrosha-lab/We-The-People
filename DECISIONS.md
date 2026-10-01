@@ -37,3 +37,7 @@ Payments, CMS editor choice, languages, hosting budget, positioning (docs/01c op
 - Content: Markdown/YAML in `content/` via Astro content collections with Zod schemas. A Git-based CMS (Decap or Tina) can be added later for editors; no server.
 - Forms: plain HTML forms posting to a hosted form endpoint, with a honeypot. The endpoint is chosen later; until then forms are not wired and are marked as placeholders.
 - Hosting: any static host or CDN.
+
+## D7. No CMS (owner direction, supersedes D6 CMS note)
+
+Plain website with all information about We The People. Content is Markdown/YAML files in `content/`, edited in the repo. No CMS, no editor login, no admin.

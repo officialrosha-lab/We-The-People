@@ -95,6 +95,15 @@
     inset-block-start: var(--s-3);
   }
 
+  .sr-only {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
   .wrap {
     padding-inline: clamp(16px, 4vw, 64px);
     max-inline-size: 1600px;
@@ -125,8 +134,12 @@
     background: var(--white);
     color: var(--night);
   }
+  .btn {
+    white-space: nowrap;
+  }
   .btn:hover {
-    background: var(--night);
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
   }
 
   .site-header {
@@ -173,9 +186,18 @@
   .header-actions {
     display: flex;
     align-items: center;
-    gap: var(--s-4);
+    gap: var(--s-2) var(--s-4);
     flex-wrap: wrap;
     justify-content: flex-end;
+  }
+  @media (max-width: 599px) {
+    .site-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .header-actions {
+      justify-content: flex-start;
+    }
   }
 
   .site-footer {

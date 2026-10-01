@@ -95,3 +95,16 @@ Nothing built yet. Questions: see "Blocking" above. One batch only: logo files, 
 **Cut:** mobile full-screen menu sheet (three links + Join fit without it; revisit when nav grows). Join form (Phase 4).
 **Decisions:** tokens copy only adds Fontsource family names ("Archivo Variable", "Source Serif 4 Variable"). Header mark is a flagged stand-in SVG, not the logo.
 **Open for owner:** real vector logo; production domain; neutrality wording.
+
+## Phase 2 (2026-10-01): Roll Call hero
+
+**Built:** `src/components/RollCall.astro`; `scripts/build-map.mjs` regenerates `src/data/liberia-map.json` from `scripts/data/liberia-counties.geojson` (Natural Earth admin-1 extract, public domain). Map is 6 KB, ids `county-<slug>`, simplified with mapshaper (20%, keep-shapes), equirectangular scaled by cos(6.5°).
+**Behaviour:** counties are called alphabetically, 270ms each, starting at 0.4s; at about 4.4s the line resolves to "THE PEOPLE"; at about 5.2s the headline, subhead and actions fade in (opacity only). Plays once per session (sessionStorage). Click, key, wheel or touch skips to the final state. Reduced motion, no JS, or a failed script all show the final state; an 8s safety timer clears the pre-state if the script never runs. The H1 and a visually hidden list of the 15 counties are in the HTML from first paint; the map and placard are `aria-hidden`.
+**Colour rule:** every lit county is white. The party-colour check (docs/01b) is still open, so no rotation through red, navy, gold or green. Revisit only after local advice.
+**Tried and fixed:**
+
+- Layout shift was 0.18 on mobile: the reserved line height used `em` on the element whose font size changed. Moved the reservation to a wrapper; CLS is now 0.002 (360px) and 0.03 (1280px).
+- On mobile the map sat below the fold, so nothing visibly lit during the sequence. Reordered the grid: placard, map, then copy.
+- Phase 1 header fix had never applied (Prettier reformatted the string I replaced). Header now stacks under 600px and the button no longer wraps. Button hover is an underline: a Night hover colour made the button vanish on dark grounds.
+  **Cut:** per-county colours; a looping or idle map animation; a county tooltip (the County Index in Phase 3 covers it).
+  **Not done / open:** Lighthouse scores and a real low-end phone test (owner reaction is the Phase 2 gate); verify county names and boundaries against an official source (Natural Earth spells it "Gbapolu", kit and this site use "Gbarpolu"; confirm); the 15-name stepping changes text about 3.7 times a second, which is not a luminance flash, but a reviewer should confirm.

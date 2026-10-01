@@ -1,0 +1,219 @@
+---
+import map from '../data/liberia-map.json';
+
+interface Props {
+  heading: string;
+  sub: string;
+}
+const { heading, sub } = Astro.props;
+const names = map.counties.map((c) => c.name);
+---
+
+<section class="roll section" data-ground="night" aria-labelledby="hero-title">
+  <script is:inline>
+    (function () {
+      var d = document.documentElement;
+      try {
+        var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!reduce && !sessionStorage.getItem('wtp-roll')) {
+          d.setAttribute('data-roll', 'pending');
+          // Safety net: if the sequence script never runs, show the final state.
+          setTimeout(function () {
+            d.removeAttribute('data-roll');
+          }, 8000);
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <div class="wrap roll-grid">
+    <p class="placard" aria-hidden="true">
+      <span class="placard-we">We</span>
+      <span class="placard-line">
+        <span data-caller>The people</span>
+      </span>
+    </p>
+    <svg
+      class="roll-map"
+      viewBox={map.viewBox}
+      aria-hidden="true"
+      focusable="false"
+    >
+      {map.counties.map((c) => (
+        <path id={c.id} data-name={c.name} d={c.d} />
+      ))}
+    </svg>
+    <div class="roll-copy">
+      <h1 id="hero-title" class="reveal">
+        {heading}
+      </h1>
+      <p class="reveal roll-sub">{sub}</p>
+      <p class="reveal roll-actions">
+        <a class="btn" href="/join/">
+          Join the movement
+        </a>
+        <a href="/about/">Read what we stand for</a>
+      </p>
+    </div>
+    <ul class="sr-only">
+      {names.map((n) => (
+        <li>{n}</li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<script>
+  const root = document.documentElement;
+  const caller = document.querySelector<HTMLElement>('[data-caller]');
+  const paths = Array.from(
+    document.querySelectorAll<SVGPathElement>('.roll-map path'),
+  );
+
+  if (root.dataset.roll === 'pending' && caller) {
+    const timers: number[] = [];
+    const final = caller.textContent ?? '';
+    let ended = false;
+
+    const end = () => {
+      if (ended) return;
+      ended = true;
+      timers.forEach(clearTimeout);
+      paths.forEach((p) => p.classList.add('lit'));
+      caller.textContent = final;
+      delete root.dataset.roll;
+      try {
+        sessionStorage.setItem('wtp-roll', '1');
+      } catch {
+        /* storage unavailable: sequence may replay, which is harmless */
+      }
+      removeEventListener('pointerdown', end);
+      removeEventListener('keydown', end);
+      removeEventListener('wheel', end);
+      removeEventListener('touchmove', end);
+    };
+    addEventListener('pointerdown', end);
+    addEventListener('keydown', end);
+    addEventListener('wheel', end, { passive: true });
+    addEventListener('touchmove', end, { passive: true });
+
+    const STEP = 270;
+    const START = 400;
+    caller.textContent = '';
+    paths.forEach((path, i) => {
+      timers.push(
+        window.setTimeout(
+          () => {
+            root.dataset.roll = 'running';
+            caller.textContent = path.dataset.name ?? '';
+            path.classList.add('lit');
+          },
+          START + i * STEP,
+        ),
+      );
+    });
+    const done = START + paths.length * STEP; // about 4.4s
+    timers.push(
+      window.setTimeout(() => {
+        root.dataset.roll = 'called';
+        caller.textContent = final;
+      }, done),
+    );
+    timers.push(window.setTimeout(end, done + 800)); // about 5.2s: headline and actions fade in
+  }
+</script>
+
+<style>
+  .roll {
+    padding-block: var(--s-5) var(--s-6);
+  }
+  .roll-grid {
+    display: grid;
+    gap: var(--s-4) var(--s-5);
+    grid-template-areas: 'placard' 'map' 'copy';
+  }
+  .placard {
+    grid-area: placard;
+  }
+  .roll-map {
+    grid-area: map;
+  }
+  .roll-copy {
+    grid-area: copy;
+  }
+  @media (min-width: 900px) {
+    .roll-grid {
+      grid-template-columns: 7fr 5fr;
+      grid-template-areas: 'placard map' 'copy map';
+      grid-template-rows: auto 1fr;
+    }
+  }
+  .placard {
+    margin: 0 0 var(--s-4);
+    max-inline-size: none;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-stretch: 62%;
+    text-transform: uppercase;
+    line-height: var(--lh-display);
+    font-size: clamp(3.5rem, 1.5rem + 13vw, 12rem);
+    color: var(--chalk);
+  }
+  .placard-we,
+  .placard-line {
+    display: block;
+  }
+  /* Reserve the final line height on the wrapper so the sequence causes no layout shift. */
+  .placard-line {
+    block-size: 0.88em;
+    white-space: nowrap;
+  }
+  .placard-line > span {
+    display: block;
+  }
+  html[data-roll='running'] .placard-line > span {
+    font-size: 0.4em;
+    line-height: 2.2;
+    color: var(--gold);
+  }
+  .roll h1 {
+    font-size: var(--step-3);
+    font-stretch: 90%;
+    text-transform: none;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .roll-sub {
+    font-size: var(--step-1);
+  }
+  .roll-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-3) var(--s-4);
+    font-family: var(--font-ui);
+    font-weight: 600;
+  }
+
+  .roll-map {
+    inline-size: 100%;
+    max-block-size: 45vh;
+    justify-self: start;
+  }
+  .roll-map path {
+    fill: var(--white);
+    stroke: var(--night);
+    stroke-width: 2;
+    transition: fill var(--dur-1) var(--ease);
+  }
+  html[data-roll] .roll-map path:not(.lit) {
+    fill: none;
+    stroke: color-mix(in srgb, var(--chalk) 25%, transparent);
+  }
+
+  .reveal {
+    transition: opacity var(--dur-3) var(--ease);
+  }
+  html[data-roll] .reveal {
+    opacity: 0;
+  }
+</style>

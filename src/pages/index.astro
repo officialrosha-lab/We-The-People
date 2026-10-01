@@ -1,6 +1,7 @@
 ---
 import { getEntry, getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import RollCall from '../components/RollCall.astro';
 const home = await getEntry('pages', 'home');
 if (!home) throw new Error('content/pages/home.md is missing');
 const programs = (await getCollection('programs')).sort(
@@ -13,23 +14,10 @@ const programs = (await getCollection('programs')).sort(
   description={home.data.description}
   ground="night"
 >
-  <section class="section hero" data-ground="night">
-    <div class="wrap">
-      <!-- Phase 2 replaces this static state with the Roll Call hero. -->
-      <h1>
-        Fifteen counties.
-        <br />
-        One table.
-      </h1>
-      <p>
-        We The People Movement brings Liberians of every party, faith and
-        background to the same table to work on what affects ordinary people.
-      </p>
-      <a class="btn" href="/join/">
-        Join the movement
-      </a>
-    </div>
-  </section>
+  <RollCall
+    heading="Fifteen counties. One table."
+    sub="We The People Movement brings Liberians of every party, faith and background to the same table to work on what affects ordinary people."
+  />
   <section class="section">
     <div class="wrap">
       <p class="statement">{home.body}</p>
@@ -51,13 +39,6 @@ const programs = (await getCollection('programs')).sort(
 </Base>
 
 <style>
-  .hero h1 {
-    font-size: clamp(3rem, 2rem + 11vw, 11rem);
-    font-stretch: 62%;
-    font-weight: 900;
-    margin-block-end: var(--s-4);
-    overflow-wrap: anywhere;
-  }
   .statement {
     font-size: var(--step-2);
     line-height: 1.3;
