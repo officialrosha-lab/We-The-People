@@ -27,6 +27,6 @@ In July 2025 the movement took part in a nationwide peaceful protest and petitio
 
 ## People
 
-**John A. Ballout Jr.**, Former Senator and Ambassador, Organising Chairman of We The People. You can hear him in the [introduction on our home page](/).
+**John A. Ballout Jr.**, Former Senator and Ambassador, Organising Chairman of We The People.
 
 [PLACEHOLDER: other leadership and spokespeople: names, roles and short biographies, with consent]

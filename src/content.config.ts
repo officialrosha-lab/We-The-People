@@ -5,28 +5,10 @@ import { z } from 'astro/zod';
 // Missing facts are never invented: use "[PLACEHOLDER: ...]" and log in content/PLACEHOLDERS.md.
 const pages = defineCollection({
   loader: glob({ pattern: '*.md', base: './content/pages' }),
-  schema: ({ image }) =>
-    z.object({
-      title: z.string(),
-      description: z.string().max(160),
-      // Optional introduction video shown on the page (same shape as a story's video; files live in public/video).
-      video: z
-        .object({
-          src: z.string().startsWith('/video/'),
-          poster: image(),
-          posterAlt: z.string().min(10),
-          captions: z
-            .string()
-            .startsWith('/video/')
-            .endsWith('.vtt')
-            .optional(),
-          transcript: z.string().min(40).optional(),
-          title: z.string(),
-          duration: z.string(),
-          heading: z.string(),
-        })
-        .optional(),
-    }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string().max(160),
+  }),
 });
 
 const programs = defineCollection({

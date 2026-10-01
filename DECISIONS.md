@@ -141,3 +141,7 @@ The owner asked for the note under the videos ("This video does not have caption
 ## D21: Introduction speaker named on the About page
 
 The owner confirmed (2026-10-01) the wording shown in the video's own caption and that full consent is held. The About page now names John A. Ballout Jr. with exactly that role text; other leadership stays a placeholder. Nothing was added beyond what the caption states.
+
+## D22: Introduction video removed
+
+At the owner's request the introduction video, its description and poster were removed from the home page and the repository (D19 no longer applies; the pages schema no longer has a `video` block). The About page still names the speaker, with the wording the owner confirmed.
