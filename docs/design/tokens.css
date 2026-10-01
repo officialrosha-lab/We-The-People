@@ -1,0 +1,79 @@
+/* We The People Movement design tokens. Do not hard-code values in components. */
+:root {
+  /* Color */
+  --night: #071B3A;
+  --navy: #0A2C63;
+  --red: #D6121C;
+  --red-tint: #FF5A60;      /* small red text on dark only */
+  --gold: #F5B700;
+  --gold-dark: #7A5A00;     /* gold-family text on light, if ever needed */
+  --chalk: #F2F4F7;
+  --forest: #166B16;
+  --muted: #4A5873;         /* secondary text on light */
+  --muted-light: #B6C2D9;   /* secondary text on dark */
+  --white: #FFFFFF;
+
+  /* Semantic: light mode (default sections on Chalk) */
+  --bg: var(--chalk);
+  --fg: var(--night);
+  --fg-muted: var(--muted);
+  --accent: var(--red);
+  --on-accent: var(--white);
+  --heading: var(--navy);
+
+  /* Type */
+  --font-display: "Archivo", "Arial Narrow", Arial, sans-serif;
+  --font-text: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-ui: "Archivo", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  /* Fluid type scale */
+  --step--1: clamp(0.85rem, 0.82rem + 0.15vw, 0.94rem);
+  --step-0: clamp(1.06rem, 1.02rem + 0.2vw, 1.19rem);   /* body, serif */
+  --step-1: clamp(1.3rem, 1.2rem + 0.5vw, 1.6rem);
+  --step-2: clamp(1.7rem, 1.4rem + 1.4vw, 2.5rem);
+  --step-3: clamp(2.3rem, 1.7rem + 3vw, 4rem);
+  --step-4: clamp(3rem, 1.8rem + 6vw, 7rem);
+  --step-hero: clamp(4.5rem, 2rem + 16vw, 16rem);       /* hero placard */
+
+  --measure: 62ch;           /* body line length; keep under 80 */
+  --lh-text: 1.65;           /* serif body */
+  --lh-ui: 1.4;
+  --lh-display: 0.88;
+
+  /* Space (8px base) */
+  --s-1: 4px; --s-2: 8px; --s-3: 16px; --s-4: 24px;
+  --s-5: 40px; --s-6: 64px; --s-7: 104px; --s-8: 168px;
+
+  /* Shape */
+  --radius-block: 0;
+  --radius-pill: 999px;
+
+  /* Motion */
+  --dur-1: 120ms; --dur-2: 240ms; --dur-3: 480ms;
+  --ease: cubic-bezier(.2,.7,.2,1);
+}
+
+/* Dark sections */
+[data-ground="night"] {
+  --bg: var(--night);
+  --fg: var(--chalk);
+  --fg-muted: var(--muted-light);
+  --accent: var(--red);
+  --heading: var(--chalk);
+}
+[data-ground="navy"] {
+  --bg: var(--navy);
+  --fg: var(--white);
+  --fg-muted: var(--muted-light);
+  --heading: var(--white);
+}
+[data-ground="red"] {
+  --bg: var(--red);
+  --fg: var(--white);
+  --fg-muted: var(--white);
+  --heading: var(--white);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-1: 0ms; --dur-2: 0ms; --dur-3: 0ms; }
+}
