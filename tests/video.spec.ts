@@ -116,3 +116,48 @@ test.describe('the march speech video', () => {
     expect(r.violations).toEqual([]);
   });
 });
+
+test.describe('the introduction video on the home page', () => {
+  test('is click-to-play, downloads nothing before play, and says it has no captions yet', async ({
+    page,
+  }) => {
+    let bytes = 0;
+    page.on('response', (r) => {
+      if (r.url().endsWith('/video/intro.mp4'))
+        bytes += Number(r.headers()['content-length'] ?? 0);
+    });
+    await page.goto('/', { waitUntil: 'networkidle' });
+    const video = page.locator('video');
+    await expect(video).toHaveCount(1);
+    await expect(video).toHaveAttribute('controls', '');
+    await expect(video).toHaveAttribute('preload', 'none');
+    await expect(video).not.toHaveAttribute('autoplay', /.*/);
+    await expect(
+      page.getByRole('heading', { name: 'Hear it from us' }),
+    ).toBeVisible();
+    await expect(
+      page.locator('figcaption', { hasText: 'does not have captions yet' }),
+    ).toBeVisible();
+    expect(bytes).toBeLessThan(500_000);
+  });
+
+  test('the file is served as H.264 mp4 and the page passes axe at 360px', async ({
+    page,
+    request,
+  }) => {
+    const res = await request.head('/video/intro.mp4');
+    expect(res.status()).toBe(200);
+    expect(res.headers()['content-type']).toContain('video/mp4');
+    await page.setViewportSize({ width: 360, height: 800 });
+    await page.goto('/');
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth - innerWidth,
+      ),
+    ).toBe(0);
+    const r = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+      .analyze();
+    expect(r.violations).toEqual([]);
+  });
+});

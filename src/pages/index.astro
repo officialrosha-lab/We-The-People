@@ -5,6 +5,7 @@ import Base from '../layouts/Base.astro';
 import RollCall from '../components/RollCall.astro';
 import CountyIndex from '../components/CountyIndex.astro';
 import Photo from '../components/Photo.astro';
+import Video from '../components/Video.astro';
 const home = await getEntry('pages', 'home');
 if (!home) throw new Error('content/pages/home.md is missing');
 const programs = (await getCollection('programs')).sort(
@@ -54,6 +55,14 @@ const fmt = new Intl.DateTimeFormat('en-GB', {
       <p class="statement">{home.body}</p>
     </div>
   </section>
+  {home.data.video && (
+    <section class="section">
+      <div class="wrap intro">
+        <h2>{home.data.video.heading}</h2>
+        <Video {...home.data.video} />
+      </div>
+    </section>
+  )}
   {march && marchLead && (
     <section class="section" data-ground="navy">
       <div class="wrap">
@@ -212,6 +221,12 @@ const fmt = new Intl.DateTimeFormat('en-GB', {
     .story-lead {
       grid-template-columns: 7fr 5fr;
     }
+  }
+  .intro {
+    max-inline-size: 56rem;
+  }
+  .intro h2 {
+    margin-block-end: var(--s-3);
   }
   .kicker {
     margin: 0;

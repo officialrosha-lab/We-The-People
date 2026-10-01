@@ -129,3 +129,7 @@ Added only what 07 allows: a cross-fade between pages (CSS cross-document View T
 ## D18: March photo band on the home page
 
 The home page showed one photo and only text elsewhere, while the march photos sat on the Stories pages. A navy band after the opening statement now shows the march (lead photo, date, summary, link to the story and its video) and a row of three more photos. It reuses the story's own photos and alt text, so nothing is duplicated in content files. The photos load only when scrolled near, so the hero stays first (home Lighthouse 100/100/100/100, LCP 1.7 s).
+
+## D19: Introduction video on the home page
+
+The owner supplied a 56 s introduction (H.264, 720p, 2.7 MB, so it was only re-packaged with fast-start and metadata stripped, not re-encoded). It sits in its own section after the opening statement, click-to-play with nothing downloaded before play, set from a `video:` block in `content/pages/home.md` (pages schema extended). No captions yet, same stance as D11; the launch check lists it. The speaker's name and role appear only in the video's own caption; the site's text leaves them out until the owner confirms them.

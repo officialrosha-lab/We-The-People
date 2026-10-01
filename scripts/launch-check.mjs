@@ -157,6 +157,13 @@ if (/^video:/m.test(march) && !/^\s+captions:/m.test(march))
     'The march-speech video has no captions (owner decision, DECISIONS D11; fails WCAG 2.2 1.2.2).',
     'Add captions when someone can write them (assets/video/README.md).',
   );
+const homeMd = read('content/pages/home.md');
+if (/^video:/m.test(homeMd) && !/^\s+captions:/m.test(homeMd))
+  add(
+    'INFO',
+    'The introduction video on the home page has no captions yet (fails WCAG 2.2 1.2.2 until someone writes them).',
+    'Add captions when someone can write them (assets/video/README.md, same steps; use the `video:` block in content/pages/home.md).',
+  );
 add(
   'INFO',
   'Not tested by a person: screen readers and a real low-end phone. The automated tests pass on Chromium, Firefox and WebKit (Safari engine) in CI, but a real iPhone and a real low-end Android are still worth one look.',
