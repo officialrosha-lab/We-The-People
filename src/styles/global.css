@@ -158,6 +158,16 @@
     text-decoration: underline;
     text-decoration-thickness: 3px;
   }
+  /* Answers a press: the button sinks a little. Transform only, so nothing around it moves. */
+  .btn {
+    transition: transform var(--dur-1) var(--ease);
+  }
+  .btn:active:not(:disabled) {
+    transform: translateY(2px) scale(0.98);
+  }
+  a {
+    transition: text-decoration-thickness var(--dur-1) var(--ease);
+  }
 
   .site-header {
     display: flex;
@@ -362,5 +372,19 @@
     content: ' (' attr(href) ')';
     font-size: 9pt;
     word-break: break-all;
+  }
+}
+
+/* Page changes cross-fade (Chromium and Safari; other browsers just change page). The header stays put. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+  ::view-transition-group(root) {
+    animation-duration: var(--dur-2);
+    animation-timing-function: var(--ease);
+  }
+  [data-site-header] {
+    view-transition-name: site-header;
   }
 }

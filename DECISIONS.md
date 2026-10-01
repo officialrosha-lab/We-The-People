@@ -121,3 +121,7 @@ Plain website with all information about We The People. Content is Markdown/YAML
 ## D16: Interim logo mark in the header and favicon
 
 The owner supplied the logo as a 921x854 JPEG with the black background baked in, the same as the kit file. It cannot be used as is on the site's Night header. For now the header mark and favicon are the figures, flag and sun cut from it (background made transparent, grey map outline dropped) on a Chalk rounded badge, embedded in `public/mark-placeholder.svg` and `public/favicon.svg`. This is interim: soft edges, not for print, not a vector. A faithful vector rebuild needs the owner's approval (docs/01b); the launch check keeps flagging it until then.
+
+## D17: Motion and interaction polish, kept inside docs/design/07
+
+Added only what 07 allows: a cross-fade between pages (CSS cross-document View Transitions, with the header held still, off under reduced motion) and press feedback on buttons (transform only) plus an eased link-underline change. Smooth scrolling was tried and dropped: it slows programmatic scrolling and broke the photo-loading test. Scroll-in entrances, hover lifts and parallax stay out, as 07 says.
