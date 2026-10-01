@@ -161,3 +161,7 @@ At the owner's request the hero map now shows connectivity and outreach. After t
 ## D26: The hero network starts from the march county
 
 At the owner's request, the outreach network (D25) now spreads out from Montserrado, where the 7 August 2025 march took place, instead of the geographic middle. The start is read from the `county` of the earliest published story, so it follows the content; with no story county it falls back to the middle of the map. Still symbolic: it does not claim a headquarters or branches.
+
+## D27: Light keeps flowing along the hero links
+
+The owner could not see the one-shot dots (they play once per session and are small), and asked for movement "like light". After the intro, and straight away on later visits, a soft gold glow with a red core now travels along every link, wave after wave outward from Montserrado (CSS animation, about 4.8 s per wave). This is a deliberate, owner-requested exception to the "no looping decorative animation" rule in docs/design/07, kept safe by: a visible "Pause the moving light" button (WCAG 2.2.2), pausing while the map is off screen, and never running under reduced motion or without JavaScript. The 27 links repaint each frame, so watch performance on low-end phones; the pause button and reduced-motion setting are the escape hatches.

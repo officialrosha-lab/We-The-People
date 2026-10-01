@@ -4,6 +4,7 @@
 Non-user-triggered motion is rare and deliberate: only the Roll Call hero. Motion that answers a person's action is welcome when it shows what changed.
 
 ## Allowed
+- Light travelling along the hero map's links, wave after wave from the first county (owner request). The one deliberate exception to "no looping decorative animation": it has a visible pause button, stops while the map is off screen, and never runs under reduced motion.
 - Roll Call hero sequence (once per session), including its second act: the outreach network drawing across the map (about 2.5 s, once, skipped by any click, key or scroll, and static under reduced motion).
 - Program row expand/collapse (height + rotate indicator, 240ms).
 - Form: field validation messages, submit button progress, success confirmation.

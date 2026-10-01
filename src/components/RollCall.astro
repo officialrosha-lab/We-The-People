@@ -137,6 +137,24 @@ const nodeDepth = nodes.map((_, i) => depth[i]!);
             d={`M${e.from.x} ${e.from.y}L${e.to.x} ${e.to.y}`}
           />
         ))}
+        <g class="flow-layer">
+          {edges.map((e) => (
+            <>
+              <path
+                class="net-glow"
+                pathLength="1"
+                style={`--o:${e.order}`}
+                d={`M${e.from.x} ${e.from.y}L${e.to.x} ${e.to.y}`}
+              />
+              <path
+                class="net-light"
+                pathLength="1"
+                style={`--o:${e.order}`}
+                d={`M${e.from.x} ${e.from.y}L${e.to.x} ${e.to.y}`}
+              />
+            </>
+          ))}
+        </g>
         {nodes.map((n, i) => (
           <circle
             class="net-node"
@@ -161,6 +179,11 @@ const nodeDepth = nodes.map((_, i) => depth[i]!);
           Read what we stand for
         </a>
       </p>
+      <p class="flow-control" hidden>
+        <button type="button" class="flow-toggle" aria-pressed="false">
+          Pause the moving light
+        </button>
+      </p>
     </div>
     <ul class="sr-only">
       {names.map((n) => (
@@ -180,6 +203,31 @@ const nodeDepth = nodes.map((_, i) => depth[i]!);
   // Act two: once every county is lit, the network links draw outward from the middle of the map, and small gold dots
   // travel along them, county to county. It plays once and settles; any click, key or scroll finishes it at once.
   const svg = document.querySelector<SVGSVGElement>('.roll-map');
+  // Act three: light keeps travelling outward along the links, wave after wave from the first county. It can be paused
+  // with the button, stops while the map is off screen, and never starts under reduced motion.
+  let flowing = false;
+  function startFlow() {
+    if (flowing || !svg) return;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    flowing = true;
+    svg.classList.add('flow');
+    const control = document.querySelector<HTMLElement>('.flow-control');
+    const toggle = control?.querySelector<HTMLButtonElement>('button');
+    if (control && toggle) {
+      control.hidden = false;
+      toggle.addEventListener('click', () => {
+        const paused = svg.classList.toggle('flow-paused');
+        toggle.setAttribute('aria-pressed', String(paused));
+        toggle.textContent = paused
+          ? 'Play the moving light'
+          : 'Pause the moving light';
+      });
+    }
+    if ('IntersectionObserver' in window)
+      new IntersectionObserver(([entry]) =>
+        svg.classList.toggle('flow-offscreen', !entry?.isIntersecting),
+      ).observe(svg);
+  }
   const NS = 'http://www.w3.org/2000/svg';
   const HOP = 520; // ms between one ring of counties and the next
   const TRAVEL = 720;
@@ -191,6 +239,7 @@ const nodeDepth = nodes.map((_, i) => depth[i]!);
       dots.forEach((a) => a.cancel());
       made.forEach((c) => c.remove());
       svg.classList.add('net-done');
+      startFlow();
       ['pointerdown', 'keydown', 'wheel', 'touchmove'].forEach((t) =>
         removeEventListener(t, finish),
       );
@@ -255,6 +304,7 @@ const nodeDepth = nodes.map((_, i) => depth[i]!);
       } catch {
         /* storage unavailable: sequence may replay, which is harmless */
       }
+      if (svg && !svg.classList.contains('net-on')) startFlow();
       removeEventListener('pointerdown', end);
       removeEventListener('keydown', end);
       removeEventListener('wheel', end);
@@ -290,6 +340,8 @@ const nodeDepth = nodes.map((_, i) => depth[i]!);
     );
     timers.push(window.setTimeout(end, done + 800)); // about 6.3s: headline and actions fade in
   }
+
+  if (root.dataset.roll !== 'pending') startFlow();
 </script>
 
 <style>
@@ -414,6 +466,74 @@ const nodeDepth = nodes.map((_, i) => depth[i]!);
   }
   .roll-map.net-on .net-node {
     transition: opacity 240ms var(--ease) calc(var(--o) * 520ms);
+  }
+
+  /* Light travelling along the links: a soft gold glow with a bright red core, wave after wave outward. */
+  .flow-layer {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .net-glow,
+  .net-light {
+    fill: none;
+    stroke-linecap: round;
+    stroke-dasharray: 0.16 1;
+    stroke-dashoffset: 0.16;
+  }
+  .net-glow {
+    stroke: var(--gold);
+    stroke-width: 15;
+    opacity: 0.6;
+  }
+  .net-light {
+    stroke: var(--red);
+    stroke-width: 6;
+  }
+  .roll-map.flow .flow-layer {
+    opacity: 1;
+  }
+  .roll-map.flow .net-glow,
+  .roll-map.flow .net-light {
+    animation: net-flow 4.8s linear infinite;
+    animation-delay: calc(var(--o) * 520ms);
+  }
+  .roll-map.flow-paused .flow-layer {
+    opacity: 0;
+  }
+  .roll-map.flow-paused .net-glow,
+  .roll-map.flow-paused .net-light,
+  .roll-map.flow-offscreen .net-glow,
+  .roll-map.flow-offscreen .net-light {
+    animation-play-state: paused;
+  }
+  @keyframes net-flow {
+    0% {
+      stroke-dashoffset: 0.16;
+    }
+    45%,
+    100% {
+      stroke-dashoffset: -1;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .flow-layer {
+      display: none;
+    }
+  }
+  .flow-toggle {
+    min-block-size: 44px;
+    padding-inline: var(--s-3);
+    border: 0;
+    background: transparent;
+    color: var(--muted-light);
+    font-family: var(--font-ui);
+    font-size: var(--step--1);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    cursor: pointer;
+  }
+  .flow-toggle:hover {
+    color: var(--white);
   }
 
   .reveal {

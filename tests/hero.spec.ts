@@ -42,6 +42,31 @@ test.describe('Roll Call hero', () => {
     await expect(page.locator('html')).not.toHaveAttribute('data-roll', /.+/);
   });
 
+  test('light keeps travelling along the links after the intro, and can be paused', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    await expect(page.locator('.roll-map')).toHaveClass(/flow/, {
+      timeout: 12000,
+    });
+    const toggle = page.getByRole('button', { name: 'Pause the moving light' });
+    await expect(toggle).toBeVisible();
+    // The light is really moving: the first link's dash offset changes between two moments.
+    const offset = () =>
+      page
+        .locator('.net-light')
+        .nth(3)
+        .evaluate((e) => getComputedStyle(e).strokeDashoffset);
+    const a = await offset();
+    await page.waitForTimeout(900);
+    expect(await offset()).not.toBe(a);
+    await toggle.click();
+    await expect(page.locator('.roll-map')).toHaveClass(/flow-paused/);
+    await expect(
+      page.getByRole('button', { name: 'Play the moving light' }),
+    ).toHaveAttribute('aria-pressed', 'true');
+  });
+
   test('any key press skips to the final state', async ({ page }) => {
     await page.goto('/');
     await page.keyboard.press('Shift');
@@ -60,6 +85,8 @@ test.describe('Roll Call hero', () => {
     // No travelling dots and no drawing: the network is simply there.
     await expect(page.locator('.net-dot')).toHaveCount(0);
     await expect(page.locator('.roll-map')).not.toHaveClass(/net-on/);
+    await expect(page.locator('.roll-map')).not.toHaveClass(/flow/);
+    await expect(page.locator('.flow-control')).toBeHidden();
     await ctx.close();
   });
 
