@@ -42,7 +42,7 @@ Hand over `docs/16-legal-review-pack.md`. The Privacy policy and Accessibility s
 ## 6. Test on real devices (owner or volunteers)
 Not done by the builder, because it needs people and hardware:
 - A low-end Android phone on mobile data: home, a story, Join, search, the menu.
-- Safari on an iPhone, and Firefox on a computer.
+- Safari on an iPhone (the automated tests already pass on Safari's engine and on Firefox in CI, but a real device is the final word).
 - A screen reader: NVDA (Windows, free) or VoiceOver (iPhone/Mac, built in) through Join, the county list and a story. Record the date and result in the accessibility statement.
 
 ## 7. A domain of your own (optional, any time)
@@ -68,10 +68,10 @@ You can launch on the github.io address. A domain of your own looks more officia
 - **Updates:** once a month run `npm audit` and `npm outdated`; update in a branch, run `npm run test:e2e`, then merge.
 
 ## Checks that run automatically
-Every push runs the formatting, type, build, accessibility and behaviour tests and the Lighthouse gate (`ci`); a separate job builds the site in a subfolder and checks that every internal address is right; the deploy workflow repeats that address check before publishing, so a broken build is never published.
+Every push runs the formatting, type, build, accessibility and behaviour tests on Chromium, Firefox and Safari's engine (WebKit), and the Lighthouse gate (`ci`); a separate job builds the site in a subfolder and checks that every internal address is right; the deploy workflow repeats that address check before publishing, so a broken build is never published.
 
 ## Known gaps at launch
 - The march-speech video has no captions (owner decision; DECISIONS D11).
-- Firefox, Safari, real phones and screen readers have not been tested by a person.
+- Real phones and screen readers have not been tested by a person. Firefox and Safari's engine pass all automated tests in CI.
 - The Content Security Policy allows inline scripts; tightening it needs a host that can add a nonce or hashes.
 - On GitHub Pages: no `X-Frame-Options`, no custom caching, no per-change preview.

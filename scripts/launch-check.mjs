@@ -159,7 +159,7 @@ if (/^video:/m.test(march) && !/^\s+captions:/m.test(march))
   );
 add(
   'INFO',
-  'Not tested by a person: screen readers, a real low-end phone, Firefox and Safari. CI runs Firefox and WebKit as a non-blocking job.',
+  'Not tested by a person: screen readers and a real low-end phone. The automated tests pass on Chromium, Firefox and WebKit (Safari engine) in CI, but a real iPhone and a real low-end Android are still worth one look.',
   'See docs/14-launch-runbook.md, "Test on real devices".',
 );
 

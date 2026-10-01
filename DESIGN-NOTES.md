@@ -196,3 +196,9 @@ The owner asked for the captions-and-transcript rule to be removed. Done: the sc
 - CI itself has not run on GitHub; the Lighthouse step and the cross-browser job are untested there.
 - The `_headers` file works on Netlify and Cloudflare Pages only; the host is not chosen. Its Content-Security-Policy still allows inline scripts.
 - All address-bearing tags (canonical, sitemap, share image, robots) use the placeholder domain example.org until the real domain is pasted into `astro.config.mjs`.
+
+## CI on GitHub, first real results (2026-10-01)
+
+**Green on GitHub's own machines:** formatting, type check, build, 92 Chromium tests, the Lighthouse gate on all 12 key pages (performance 98 to 100, other three 100; LCP 1.8 to 2.1 s; CLS 0), the subfolder address check, and the same 92 tests on Firefox and WebKit (Safari engine), so 276 test runs in all. This replaces the earlier note that Firefox, Safari and CI were untested; real phones and screen readers still are.
+**What CI found that local testing could not:** (1) Safari's engine requests the start of a video file despite `preload="none"` (test now measures bytes); (2) GitHub's newer Chrome fetched every lazy photo at once, slowing the main photo on the two story pages (fixed by loading photos only when scrolled near, DECISIONS D15); (3) I once pushed notes without re-running the formatter, which CI caught immediately. Lesson kept: run `npx prettier --check .` as the last step before every commit.
+**Live:** https://officialrosha-lab.github.io/We-The-People/ is published (preview mode: noindex), smoke test and browser checks pass; forms are not connected yet.
