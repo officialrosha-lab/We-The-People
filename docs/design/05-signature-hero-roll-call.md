@@ -12,7 +12,7 @@ The fifteen counties: Bomi, Bong, Gbarpolu, Grand Bassa, Grand Cape Mount, Grand
 2. 0.4s to 4.4s County names step through quickly (about 270ms each), set in a single moving line beneath WE; each triggers its region on the map to fill with a color (Flag red for the first region, then navy, white or gold accents by role, see below).
 3. 4.4s All counties lit. The names collapse into the line "THE PEOPLE".
 4. 5.2s The H1 and subhead settle in; Join button and link appear (opacity only).
-5. Act two, 5.5s to about 8s: the outreach network. Links draw outward from the county nearest the middle of the map, one ring of neighbouring counties at a time, while small red dots travel along them county to county; a gold node settles in each county. Then it stops. The links are the shared borders between counties (computed from the map), so the picture is symbolic: it does not say where branches or offices are, and it starts from the geographic middle, not a base.
+5. Act two, 5.5s to about 8s: the outreach network. Links draw outward from Montserrado, the county of the 7 August 2025 march (read from the earliest story's `county`; if none, the county nearest the middle of the map), one ring of neighbouring counties at a time, while small red dots travel along them county to county; a gold node settles in each county. Then it stops. The links are the shared borders between counties (computed from the map), so the picture is symbolic: it does not say where branches or offices are. It starts where the first published activity took place; it is not a claim about a headquarters.
 6. Final state is stable and readable: quiet navy links and gold nodes stay on the map. Nothing continues to loop.
 
 Skip control: any click, key press or scroll jumps to the final state.

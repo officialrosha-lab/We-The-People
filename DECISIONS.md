@@ -157,3 +157,7 @@ On screens 1000px and wider, text pages (About, Contact, Privacy and the like) p
 ## D25: Outreach network on the hero map
 
 At the owner's request the hero map now shows connectivity and outreach. After the roll call lights the fifteen counties, links draw outward between neighbouring counties and small dots travel along them, then it settles and stays as a quiet network (navy links, gold nodes). Links are the shared borders computed from the map data, so nothing is invented; it is symbolic and does not claim where branches exist, and it starts from the county nearest the geographic middle, not a base. Plays once per session (about 2.5 s after the roll call), any click, key or scroll finishes it, reduced motion and no-JavaScript show the final state. Built with CSS plus the Web Animations API in the existing hero script. docs/design 05 and 07 updated first.
+
+## D26: The hero network starts from the march county
+
+At the owner's request, the outreach network (D25) now spreads out from Montserrado, where the 7 August 2025 march took place, instead of the geographic middle. The start is read from the `county` of the earliest published story, so it follows the content; with no story county it falls back to the middle of the map. Still symbolic: it does not claim a headquarters or branches.
