@@ -28,6 +28,14 @@ const fmt = new Intl.DateTimeFormat('en-GB', {
   title={home.data.title}
   description={home.data.description}
   ground="night"
+  jsonLd={{
+    '@context': 'https://schema.org',
+    '@type': 'NGO',
+    name: 'We The People, Inc.',
+    alternateName: 'We The People Movement',
+    url: Astro.site?.toString(),
+    description: home.data.description,
+  }}
 >
   <RollCall
     heading="Fifteen counties. One table."

@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Photo from '../../components/Photo.astro';
 import Video from '../../components/Video.astro';
+import { getImage } from 'astro:assets';
 
 export async function getStaticPaths() {
   const stories = await getCollection('stories');
@@ -11,6 +12,38 @@ export async function getStaticPaths() {
 const { story } = Astro.props;
 const { Content } = await render(story);
 const [lead, ...more] = story.data.images;
+const shareImage = lead
+  ? await getImage({
+      src: lead.src,
+      width: 1200,
+      height: 630,
+      fit: 'cover',
+      format: 'jpg',
+    })
+  : null;
+// Preload the lead photo (it is the largest thing on screen) in the format the browser will pick.
+// Same widths the Picture component offers: the standard steps below the original, plus the original width.
+const leadWidths = lead
+  ? [
+      ...new Set([
+        ...[400, 800, 1200, 1600].filter((w) => w < lead.src.width),
+        lead.src.width,
+      ]),
+    ]
+  : [];
+const leadSet = lead
+  ? await Promise.all(
+      leadWidths.map(async (w) => {
+        const i = await getImage({
+          src: lead.src,
+          width: w,
+          format: 'avif',
+        });
+        return `${i.src} ${w}w`;
+      }),
+    )
+  : [];
+const org = { '@type': 'Organization', name: 'We The People, Inc.' };
 const fmt = new Intl.DateTimeFormat('en-GB', {
   day: 'numeric',
   month: 'long',
@@ -23,7 +56,31 @@ const fmt = new Intl.DateTimeFormat('en-GB', {
   title={story.data.title}
   description={story.data.summary}
   image={lead?.src}
+  jsonLd={{
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: story.data.title,
+    description: story.data.summary,
+    datePublished: story.data.date.toISOString().slice(0, 10),
+    author: org,
+    publisher: org,
+    mainEntityOfPage: new URL(Astro.url.pathname, Astro.site).toString(),
+    ...(shareImage && Astro.site
+      ? { image: [new URL(shareImage.src, Astro.site).toString()] }
+      : {}),
+  }}
 >
+  {lead && leadSet.length > 0 && (
+    <link
+      slot="head"
+      rel="preload"
+      as="image"
+      type="image/avif"
+      imagesrcset={leadSet.join(', ')}
+      imagesizes="(min-width: 1600px) 1500px, 92vw"
+      fetchpriority="high"
+    />
+  )}
   <article>
     <section class="section">
       <div class="wrap head">

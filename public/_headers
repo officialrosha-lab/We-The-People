@@ -1,0 +1,20 @@
+# Security and caching headers. This file is read by Netlify and Cloudflare Pages.
+# Other hosts need the same rules in their own format (Vercel: vercel.json; Apache/nginx: server config).
+# The form hosts below must match the two services in src/lib/forms.ts.
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), interest-cohort=()
+  X-Frame-Options: DENY
+  Content-Security-Policy: default-src 'self'; img-src 'self' data:; media-src 'self'; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; connect-src 'self' https://formspree.io https://*.sibforms.com; form-action 'self' https://formspree.io https://*.sibforms.com; frame-ancestors 'none'; base-uri 'self'; object-src 'none'
+
+# Built assets have content hashes in their names, so they can be cached for a year.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/video/*
+  Cache-Control: public, max-age=2592000
+
+/pagefind/*
+  Cache-Control: public, max-age=86400

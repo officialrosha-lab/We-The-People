@@ -4,15 +4,34 @@ import Base from '../layouts/Base.astro';
 
 <Base
   title="Page not found"
-  description="This page does not exist. Go to the home page."
+  description="This page does not exist. Go to the home page or find your county."
+  index={false}
 >
   <section class="section">
     <div class="wrap">
       <h1>Page not found</h1>
-      <p>This page does not exist. Go to the home page.</p>
-      <a class="btn" href="/">
-        Go to the home page
-      </a>
+      <p>
+        This page does not exist. Go to the home page, find your county, or
+        search the site.
+      </p>
+      <p class="actions">
+        <a class="btn" href="/">
+          Go to the home page
+        </a>
+        <a href="/counties/">Find your county</a>
+        <a href="/search/">Search the site</a>
+      </p>
     </div>
   </section>
 </Base>
+
+<style>
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-3) var(--s-4);
+    font-family: var(--font-ui);
+    font-weight: 600;
+  }
+</style>

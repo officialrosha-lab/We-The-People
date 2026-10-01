@@ -22,7 +22,6 @@ Claude Code appends every unresolved placeholder here: file, location, what is n
 | content/record/*.md | body | Source links for both July 2025 entries; what the petition asked for; what happened next | Owner |
 | content/counties/ (empty) | one file per county | Branch status and contact, only when real. Add `<slug>.md` with `branchStatus` and `contact` | Owner |
 | content/stories/ (empty) | one file per story | Stories with documented consent; add to CONSENT-LOG.md first | Owner |
-| src/pages/privacy.astro, accessibility.astro | whole page | Privacy policy and accessibility statement, drafted for legal review | Owner / legal |
 | src/pages/join.astro | "What happens after you join" | How soon and who contacts a new member | Owner |
 | src/components/ActionForm.astro | privacy lines under each form | Legal review of the one-line privacy statements; they promise use "only" for the stated purpose | Owner / legal |
 | content/events/ (empty) | one file per event | Real events: title, summary, start (UTC, same as Monrovia time), place, optional end, county, `registration: true` to open sign-up | Owner |
@@ -39,4 +38,7 @@ Claude Code appends every unresolved placeholder here: file, location, what is n
 | content/pages/transparency.md | Registration | Registration number, date and registering authority for We The People, Inc. (legal name confirmed by the owner) | Owner / legal |
 \n| assets/video-pending/march-speech.vtt | all cues | Write and check the captions and transcript for the 90-second march speech; then move the video into `public/video/` and add the `video:` block (see assets/video-pending/README.md). Confirm consent covers the video and its audio | Owner |
 | public/video/march-speech.mp4 | captions and transcript | Optional: write captions to `public/video/march-speech.vtt` and add `captions:` to the story (assets/video/README.md). Until then the page says the video has no captions. Also confirm consent covers the video's audio | Owner |
-| src/pages/accessibility.astro | accessibility statement | List the known gap: the march-speech video has no captions (WCAG 2.2 1.2.2) | Owner / legal |
+| content/pages/privacy.md | whole policy | Legal review. Fill: purposes, where Formspree and Brevo store data, retention periods, the contact for requests, applicable law, child-protection policy, date | Owner / legal |
+| content/pages/accessibility.md | statement | Date and result of a manual screen-reader test; the contact for accessibility requests; add captions to the march video and remove the note about it | Owner |
+| content/pages/press.md | contact, logos, fact sheet | Spokesperson and contact; downloadable logos (needs a vector logo); fact-sheet facts the movement approves; terms for press use of photos | Owner |
+| public/og-default.png | image | Replace with a version using the real logo when it exists (`node scripts/build-og.mjs`) | Owner / designer |

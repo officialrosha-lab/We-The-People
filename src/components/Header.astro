@@ -5,16 +5,26 @@ const links = [
   { href: '/counties/', label: 'Counties' },
   { href: '/stories/', label: 'Stories' },
   { href: '/events/', label: 'Events' },
+  { href: '/search/', label: 'Search' },
 ];
 ---
 
-<header class="site-header">
+<header class="site-header" data-site-header>
   <a class="brand" href="/">
     <img src="/mark-placeholder.svg" alt="" width="40" height="40" />
     <span>We The People Movement</span>
   </a>
   <div class="header-actions">
-    <nav class="site-nav" aria-label="Main">
+    <!-- Shown only when JavaScript is available (class set in the head) and the screen is narrow; without JS the links simply wrap. -->
+    <button
+      class="menu-btn"
+      type="button"
+      aria-expanded="false"
+      aria-controls="site-nav"
+    >
+      Menu
+    </button>
+    <nav class="site-nav" id="site-nav" aria-label="Main">
       <ul>
         {links.map((l) => (
           <li>
@@ -28,3 +38,44 @@ const links = [
     </a>
   </div>
 </header>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-site-header]');
+  const button = header?.querySelector<HTMLButtonElement>('.menu-btn');
+  const nav = header?.querySelector<HTMLElement>('#site-nav');
+  const narrow = matchMedia('(max-width: 899px)');
+  const behind = () =>
+    Array.from(document.querySelectorAll<HTMLElement>('main, .site-footer'));
+
+  if (header && button && nav) {
+    const set = (open: boolean, returnFocus = false) => {
+      button.setAttribute('aria-expanded', String(open));
+      button.textContent = open ? 'Close' : 'Menu';
+      document.documentElement.classList.toggle('menu-open', open);
+      nav.toggleAttribute('data-open', open);
+      behind().forEach((el) => (el.inert = open));
+      if (open) {
+        document.documentElement.style.setProperty(
+          '--sheet-top',
+          `${Math.round(header.getBoundingClientRect().bottom)}px`,
+        );
+        nav.querySelector<HTMLElement>('a')?.focus();
+      } else if (returnFocus) button.focus();
+    };
+
+    button.addEventListener('click', () =>
+      set(button.getAttribute('aria-expanded') !== 'true', true),
+    );
+    addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && button.getAttribute('aria-expanded') === 'true')
+        set(false, true);
+    });
+    // Following a link, or growing the window past the breakpoint, closes the sheet.
+    nav.addEventListener('click', (e) => {
+      if ((e.target as Element).closest('a')) set(false);
+    });
+    narrow.addEventListener('change', () => {
+      if (!narrow.matches) set(false);
+    });
+  }
+</script>

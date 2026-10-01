@@ -1,6 +1,7 @@
 ---
-import '@fontsource-variable/archivo/wdth.css';
-import '@fontsource-variable/source-serif-4/opsz.css';
+import '../styles/fonts.css';
+import archivoLatin from '../../node_modules/@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2?url';
+import serifLatin from '../../node_modules/@fontsource-variable/source-serif-4/files/source-serif-4-latin-wght-normal.woff2?url';
 import '../styles/tokens.css';
 import '../styles/global.css';
 import Header from '../components/Header.astro';
@@ -12,11 +13,22 @@ interface Props {
   title: string;
   description: string;
   ground?: 'night' | 'chalk';
+  /** Include this page in site search. */
+  index?: boolean;
   /** Photo used for link previews (WhatsApp, Facebook). */
   image?: ImageMetadata | undefined;
+  /** Structured data (schema.org) for this page. */
+  jsonLd?: object | undefined;
 }
-const { title, description, ground = 'chalk', image } = Astro.props;
-// [PLACEHOLDER: a default Open Graph image for pages without a photo; needs the real logo]
+const {
+  title,
+  description,
+  ground = 'chalk',
+  image,
+  index = true,
+  jsonLd,
+} = Astro.props;
+// Pages without a photo share public/og-default.png (made by scripts/build-og.mjs; replace it when the real logo exists).
 const og = image
   ? await getImage({
       src: image,
@@ -35,23 +47,53 @@ const fullTitle =
 <!doctype html>
 <html lang="en">
   <head>
+    <script is:inline>
+      document.documentElement.classList.add('menu-js');
+    </script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link
+      rel="preload"
+      href={archivoLatin}
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href={serifLatin}
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <slot name="head" />
     <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    {og && (
-      <>
-        <meta
-          property="og:image"
-          content={new URL(og.src, Astro.site).toString()}
-        />
-        <meta name="twitter:card" content="summary_large_image" />
-      </>
+    <meta
+      property="og:image"
+      content={
+        og
+          ? new URL(og.src, Astro.site).toString()
+          : new URL('/og-default.png', Astro.site).toString()
+      }
+    />
+    <meta
+      property="og:image:alt"
+      content={
+        og
+          ? title
+          : 'We The People Movement: a white map of Liberia’s fifteen counties beside the words We The People.'
+      }
+    />
+    <meta property="og:site_name" content="We The People Movement" />
+    <meta name="twitter:card" content="summary_large_image" />
+    {jsonLd && (
+      <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     )}
   </head>
   <body>
@@ -67,7 +109,7 @@ const fullTitle =
         <Header />
       </div>
     </div>
-    <main id="main">
+    <main id="main" data-pagefind-body={index ? '' : undefined}>
       <slot />
     </main>
     <Footer />
