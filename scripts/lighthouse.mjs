@@ -1,12 +1,13 @@
 // Runs Lighthouse (mobile, simulated slow 4G) on key pages and fails if any score is under 95
-// or the largest contentful paint is over 2.5 s. Usage: node scripts/lighthouse.mjs [baseUrl] [--json]
+// or the largest contentful paint is over 2.5 s. Usage: node scripts/lighthouse.mjs [baseUrl] [--only=/path/]
 // Needs a running site (npm run build && npm run preview) and Chrome; set CHROME_PATH if it is not on the PATH.
 import lighthouse from 'lighthouse';
 import * as chromeLauncher from 'chrome-launcher';
 
 const base =
   process.argv.find((a) => a.startsWith('http')) ?? 'http://localhost:4321';
-const pages = [
+const only = process.argv.find((a) => a.startsWith('--only='))?.slice(7);
+const allPages = [
   '/',
   '/about/',
   '/our-work/drugs-and-recovery/',
@@ -20,6 +21,7 @@ const pages = [
   '/contact/',
   '/search/',
 ];
+const pages = only ? [only] : allPages;
 const MIN = 95;
 const MAX_LCP = 2500;
 

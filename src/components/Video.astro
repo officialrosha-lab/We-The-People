@@ -17,16 +17,17 @@ interface Props {
 }
 const { src, poster, posterAlt, captions, transcript, title, duration } =
   Astro.props;
-const p = await getImage({ src: poster, width: 960, format: 'webp' });
+const p = await getImage({ src: poster, width: 640, format: 'webp' });
 ---
 
 <figure class="video">
-  <!-- No autoplay, no sound until the viewer presses play, and nothing downloads until then. -->
+  <!-- No autoplay, no sound until the viewer presses play, and the video itself downloads only then.
+       The poster still image is attached after the page has loaded, so it never competes with the page's main photo. -->
   <video
     controls
     preload="none"
     playsinline
-    poster={p.src}
+    data-poster={p.src}
     width={p.attributes.width}
     height={p.attributes.height}
     aria-label={title}
@@ -63,6 +64,18 @@ const p = await getImage({ src: poster, width: 960, format: 'webp' });
     </details>
   )}
 </figure>
+
+<script>
+  // Attach each video's poster once the page has finished loading (without JavaScript the box simply stays dark).
+  const attach = () =>
+    document
+      .querySelectorAll<HTMLVideoElement>('video[data-poster]')
+      .forEach((v) => {
+        v.poster = v.dataset.poster ?? '';
+      });
+  if (document.readyState === 'complete') attach();
+  else addEventListener('load', attach, { once: true });
+</script>
 
 <style>
   .video {

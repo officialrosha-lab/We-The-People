@@ -180,3 +180,19 @@ Nothing built yet. Questions: see "Blocking" above. One batch only: logo files, 
 ## Video published without captions (2026-10-01)
 
 The owner asked for the captions-and-transcript rule to be removed. Done: the schema gate is gone; the march-speech video is on the march story, click to play, with a visible note "This video does not have captions yet." and a plain description of what it shows. Captions stay optional and can be added with two lines of front matter. The accessibility cost (WCAG 2.2 1.2.2, Level A) is written down in DECISIONS D11 and a placeholder for the accessibility statement. Tests now assert the video is published, click-to-play, has no caption track, and that nothing downloads before play.
+
+## Phase 5 (2026-10-01): polish and quality
+
+**Built:** mobile menu sheet; site search (Pagefind); sitemap, robots.txt, canonical, Open Graph and Twitter tags on every page, JSON-LD (NGO, Article, Event), a branded default share image; print stylesheet; draft Privacy and Accessibility pages from what the site really does; a Press page; a better 404 (home, find your county, search); security headers file; Lighthouse and cross-browser CI; font and image performance work.
+**Measured (Lighthouse, mobile, simulated slow 4G, CPU slowed 4x, production build, 12 key pages):** performance 98 to 100, accessibility 100, best practices 100, SEO 100 on every page; LCP 1.8 s on text pages, 2.1 to 2.3 s on story pages; CLS 0 everywhere; page weight 146 to 240 KB. Before: story pages were 93 to 94 with LCP up to 2.9 s and one page had CLS 0.079.
+**What fixed it:** layout shift came from font swapping, solved by preloading and shipping only Latin and Latin Extended; the serif file went from 122 KB to 51 KB (weight-only); the lead photo of each story is preloaded in the exact AVIF variant the browser selects (a first attempt at a lower image quality made files bigger and was reverted); the video poster is attached after the page has loaded so it no longer competes with the main photo (LCP 2,485 ms to 2,260 ms).
+**Cut or deferred, on purpose:** analytics (none installed, so no consent banner); offline reading through a service worker (priority "could"); translations (English only); an Impact page (no verified numbers); the print view of the county map.
+**Tests:** 89 passing. New: menu (open, Escape, keyboard order, focus return, inert page behind, breakpoint change, no-JS fallback, axe while open), search (finds a story and a county, no-results message, no-JS message, axe, 360px), SEO (every sitemap page has a unique title, a description of 160 characters or fewer, canonical, share image and alt, one h1 and lang), structured data, the headers file, and print styles.
+**Not verified, and why:**
+
+- Firefox and Safari: only Chromium is installed here. CI now runs Firefox and a WebKit engine as a non-blocking job; nobody has seen the result yet.
+- A real low-end Android phone: Lighthouse's simulated slow 4G and 4x CPU slowdown is the closest check available here, not a substitute.
+- Screen readers (NVDA, VoiceOver, TalkBack): not done; the accessibility statement says so.
+- CI itself has not run on GitHub; the Lighthouse step and the cross-browser job are untested there.
+- The `_headers` file works on Netlify and Cloudflare Pages only; the host is not chosen. Its Content-Security-Policy still allows inline scripts.
+- All address-bearing tags (canonical, sitemap, share image, robots) use the placeholder domain example.org until the real domain is pasted into `astro.config.mjs`.
