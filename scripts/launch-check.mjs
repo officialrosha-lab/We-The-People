@@ -64,8 +64,8 @@ if (
 )
   add(
     'BLOCKER',
-    "The header still shows a stand-in star, not the movement's logo. The share image has no logo either.",
-    'Get the vector logo, replace public/mark-placeholder.svg and public/favicon.svg, then run `node scripts/build-og.mjs`.',
+    'The header and favicon use an interim cut-out of the supplied raster logo, and the share image has no logo.',
+    'Get the vector logo (or approve a faithful rebuild), replace public/mark-placeholder.svg and public/favicon.svg, then run `node scripts/build-og.mjs`.',
   );
 
 // 4. Legal and public-facing text, by file.

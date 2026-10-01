@@ -15,6 +15,7 @@ Notes
 | File | Type | What it shows | Credit / owner | License / consent | Alt text draft |
 |---|---|---|---|---|---|
 | logo/wtp-movement-logo-original.jpg | Logo (raster, 921x854) | Three raised figures (red, green, navy) holding a flag, rising sun, outline of Liberia, "WE THE PEOPLE" arch, "MOVEMENT" ribbon | [FILL designer/owner] | [FILL] | "We The People Movement logo: three people raise the Liberian-style flag before a rising sun and the map of Liberia" |
+| logo/wtp-movement-logo-received.jpg | Logo as supplied by the owner (raster, 921x854, black background baked in; same size and look as the kit file) | Three raised figures (red, green, navy) holding a flag, rising sun, outline of Liberia, "WE THE PEOPLE" arch, "MOVEMENT" ribbon | [FILL designer/owner] | [FILL] | "We The People Movement logo: three people raise the Liberian-style flag before a rising sun and the map of Liberia" |
 
 ## Photos in use (src/assets/photos)
 Owner states consent is held for all of them (see `content/CONSENT-LOG.md`). The site generates AVIF, WebP and JPEG at 400 to 1600 px wide; the files below are the sources. The originals carried no EXIF or location data. A thin black line (team photo) and a pale grey strip (talk photo, a video frame) were cropped from the top edge.
