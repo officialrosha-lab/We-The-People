@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 import { getEntry, getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import RollCall from '../components/RollCall.astro';
@@ -33,7 +34,7 @@ const fmt = new Intl.DateTimeFormat('en-GB', {
     '@type': 'NGO',
     name: 'We The People, Inc.',
     alternateName: 'We The People Movement',
-    url: Astro.site?.toString(),
+    url: new URL(url('/'), Astro.site).toString(),
     description: home.data.description,
   }}
 >
@@ -53,7 +54,7 @@ const fmt = new Intl.DateTimeFormat('en-GB', {
         {programs.map((p) => (
           <li>
             <h3>
-              <a href={`/our-work/${p.id}/`}>{p.data.title}</a>
+              <a href={url(`/our-work/${p.id}/`)}>{p.data.title}</a>
             </h3>
             <p>{p.data.summary}</p>
           </li>
@@ -81,7 +82,7 @@ const fmt = new Intl.DateTimeFormat('en-GB', {
         ))}
       </ul>
       <p>
-        <a href="/record/">Read the full record</a>
+        <a href={url('/record/')}>Read the full record</a>
       </p>
     </div>
   </section>
@@ -98,11 +99,13 @@ const fmt = new Intl.DateTimeFormat('en-GB', {
         <div>
           <h2>From the field</h2>
           <h3>
-            <a href={`/stories/${leadStory.id}/`}>{leadStory.data.title}</a>
+            <a href={url(`/stories/${leadStory.id}/`)}>
+              {leadStory.data.title}
+            </a>
           </h3>
           <p>{leadStory.data.summary}</p>
           <p>
-            <a href="/stories/">All stories</a>
+            <a href={url('/stories/')}>All stories</a>
           </p>
         </div>
       </div>
@@ -115,7 +118,7 @@ const fmt = new Intl.DateTimeFormat('en-GB', {
         Membership is open to everybody. You do not have to leave your party.
       </p>
       <p>
-        <a class="btn" href="/join/">
+        <a class="btn" href={url('/join/')}>
           Join the movement
         </a>
       </p>

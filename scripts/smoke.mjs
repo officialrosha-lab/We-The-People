@@ -1,11 +1,17 @@
-// Post-deploy smoke test. Usage: node scripts/smoke.mjs https://your-domain.org
+// Post-deploy smoke test. Usage: node scripts/smoke.mjs https://your-domain [--preview]
 // Checks the live site the way a visitor and a search engine would. Exit code 1 if anything fails.
+// --preview: the site is not meant to be found by search engines yet (ALLOW_SEARCH_ENGINES is false), so that is expected.
+// The address may include a subfolder, for example https://name.github.io/Repository
 const base = (process.argv[2] ?? '').replace(/\/$/, '');
 if (!/^https?:\/\//.test(base)) {
-  console.error('Usage: node scripts/smoke.mjs https://your-domain.org');
+  console.error(
+    'Usage: node scripts/smoke.mjs https://your-domain [--preview]',
+  );
   process.exit(2);
 }
 const secure = base.startsWith('https://');
+const preview = process.argv.includes('--preview');
+const origin = new URL(base).origin;
 let failed = 0;
 const ok = (cond, label, extra = '') => {
   if (!cond) failed++;
@@ -15,6 +21,12 @@ const ok = (cond, label, extra = '') => {
 };
 const get = (path, opts = {}) =>
   fetch(base + path, { redirect: 'manual', ...opts });
+// Sitemap addresses already contain any subfolder, so pages are fetched from the origin.
+const getPage = (path, opts = {}) =>
+  fetch(origin + path, { redirect: 'manual', ...opts });
+const isGitHubPages = (res) =>
+  /GitHub\.com/i.test(res.headers.get('server') ?? '') ||
+  res.headers.has('x-github-request-id');
 
 // 1. Sitemap lists the pages; every one answers 200 with a title, one h1 and no leftover placeholder address.
 const sm = await get('/sitemap-0.xml');
@@ -25,7 +37,7 @@ const urls = [...(await sm.text()).matchAll(/<loc>([^<]+)<\/loc>/g)].map(
 ok(urls.length >= 30, 'sitemap lists the pages', `${urls.length} pages`);
 let badAddress = 0;
 for (const path of urls) {
-  const r = await get(path);
+  const r = await getPage(path);
   const html = r.status === 200 ? await r.text() : '';
   const good =
     r.status === 200 &&
@@ -61,45 +73,72 @@ for (const [path, type] of [
     `${r.status} ${r.headers.get('content-type') ?? ''}`,
   );
 }
+
+// 4. Search engines: blocked while the site is a preview, allowed at launch.
 const robots = await (await get('/robots.txt')).text();
+const blocked = /Disallow:\s*\/\s*$/m.test(robots);
+const homeRes = await get('/');
+const homeHtml = await homeRes.clone().text();
+if (preview)
+  ok(blocked, 'robots.txt asks search engines to stay away (preview mode)');
+else {
+  ok(!blocked, 'search engines are allowed (ALLOW_SEARCH_ENGINES is true)');
+  ok(
+    /Sitemap: https?:\/\/(?!example\.org)/.test(robots),
+    'robots.txt names the real sitemap address',
+  );
+}
 ok(
-  /Sitemap: https?:\/\/(?!example\.org)/.test(robots),
-  'robots.txt names the real sitemap address',
+  /<meta name="robots" content="noindex/.test(homeHtml) === preview,
+  preview ? 'pages carry noindex (preview mode)' : 'pages do not carry noindex',
 );
 
-// 4. Security headers (set by public/_headers on Netlify or Cloudflare Pages).
-const home = await get('/');
-const h = (n) => home.headers.get(n) ?? '';
+// 5. Security: the policy is in every page; headers too where the host can send them.
 ok(
-  /default-src 'self'/.test(h('content-security-policy')),
-  'Content-Security-Policy is set',
+  /<meta http-equiv="Content-Security-Policy" content="default-src 'self'/.test(
+    homeHtml,
+  ),
+  'the Content-Security-Policy is in the page',
 );
-ok(
-  /formspree\.io/.test(h('content-security-policy')) &&
-    /sibforms\.com/.test(h('content-security-policy')),
-  'CSP allows the two form services',
-);
-ok(
-  h('x-content-type-options') === 'nosniff',
-  'X-Content-Type-Options: nosniff',
-);
-ok(/strict-origin/.test(h('referrer-policy')), 'Referrer-Policy is set');
-ok(/DENY/i.test(h('x-frame-options')), 'X-Frame-Options: DENY');
-if (secure)
-  ok(
-    /max-age=\d{6,}/.test(h('strict-transport-security')),
-    'HTTPS is enforced with Strict-Transport-Security (usually the host adds it)',
+if (isGitHubPages(homeRes)) {
+  console.log(
+    'note GitHub Pages cannot send custom headers (X-Frame-Options, cache rules), so header checks are skipped.',
   );
-const asset = /\/_astro\/[^"']+\.css/.exec(await home.clone().text())?.[0];
-if (asset)
+} else {
+  const h = (n) => homeRes.headers.get(n) ?? '';
   ok(
-    /immutable/.test(
-      (await get(asset, { method: 'HEAD' })).headers.get('cache-control') ?? '',
-    ),
-    'built assets are cached for a year',
+    /default-src 'self'/.test(h('content-security-policy')),
+    'Content-Security-Policy header is set',
   );
+  ok(
+    /formspree\.io/.test(h('content-security-policy')) &&
+      /sibforms\.com/.test(h('content-security-policy')),
+    'CSP allows the two form services',
+  );
+  ok(
+    h('x-content-type-options') === 'nosniff',
+    'X-Content-Type-Options: nosniff',
+  );
+  ok(/strict-origin/.test(h('referrer-policy')), 'Referrer-Policy is set');
+  ok(/DENY/i.test(h('x-frame-options')), 'X-Frame-Options: DENY');
+  if (secure)
+    ok(
+      /max-age=\d{6,}/.test(h('strict-transport-security')),
+      'HTTPS is enforced with Strict-Transport-Security (usually the host adds it)',
+    );
+  const asset = /\/_astro\/[^"']+\.css/.exec(homeHtml)?.[0];
+  if (asset)
+    ok(
+      /immutable/.test(
+        (await getPage(asset, { method: 'HEAD' })).headers.get(
+          'cache-control',
+        ) ?? '',
+      ),
+      'built assets are cached for a year',
+    );
+}
 
-// 5. HTTPS: plain http redirects to https.
+// 6. HTTPS: plain http redirects to https.
 if (secure) {
   const r = await fetch(base.replace('https://', 'http://') + '/', {
     redirect: 'manual',
@@ -112,16 +151,14 @@ if (secure) {
   );
 }
 
-// 6. The forms are connected: the page must point at Formspree and Brevo, not be empty.
+// 7. The forms are connected: the page must point at Formspree and Brevo, not be empty.
 const join = await (await get('/join/')).text();
 ok(
   /data-endpoint="https:\/\/formspree\.io\/f\//.test(join),
   'Join form is connected to Formspree',
 );
 ok(
-  /data-endpoint="https:\/\/[a-z0-9-]+\.sibforms\.com\//.test(
-    await (await get('/')).text(),
-  ),
+  /data-endpoint="https:\/\/[a-z0-9-]+\.sibforms\.com\//.test(homeHtml),
   'Newsletter is connected to Brevo',
 );
 

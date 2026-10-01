@@ -5,9 +5,9 @@ There is no login and no admin screen. The website is made from plain text files
 ## How a change gets onto the site
 1. Open the repository on GitHub and find the file (the guide below says which).
 2. Press the pencil icon, edit, then press **Commit changes**. Choose **Create a new branch and start a pull request** (safer than changing the live site directly).
-3. The host builds a **preview link** for your change (Netlify and Cloudflare Pages do this on every pull request). Open it and check the page looks right.
-4. If it looks right, press **Merge pull request**. The live site updates within a few minutes.
-5. If the build fails, the pull request shows a red mark. Click it to read the message; it names the file and the problem (for example "summary is too long"). Fix it in the same pull request.
+3. GitHub checks your change automatically. Wait a minute or two: a green tick means the site builds and the tests pass; a red mark means something is wrong (click it to read the message; it names the file and the problem, for example "summary is too long"). Fix it in the same pull request. (GitHub Pages has no preview link for a change, so these checks are your safety net.)
+4. If it is green, press **Merge pull request**. The live site updates about two minutes later. Open it and check the page looks right.
+5. If something is wrong after merging, press **Revert** on the merged pull request, which puts the old version back.
 
 Never paste passwords, API keys or private information into any file. The two form addresses in `src/lib/forms.ts` are public by design; nothing else secret is ever needed.
 
@@ -53,7 +53,7 @@ registration: true               # true shows the sign-up form
 ---
 Details for people who want to come.
 ```
-Events move to "Past events" by themselves, but only when the site is rebuilt, which the nightly rebuild does (`docs/14`, step 9).
+Events move to "Past events" by themselves, because the site rebuilds every night (`docs/14`, step 9).
 
 ### Add a line to the Record
 Create `content/record/2026-02-short-name.md` with `date`, `title`, and, if possible, `sourceUrl` (a link to independent coverage or a primary document) and `sourceLabel` (what the link is, for example "Report in a national newspaper"). If the only source is the movement's own post, say so in `sourceLabel`.
@@ -78,7 +78,7 @@ See `assets/video/README.md`.
 `src/lib/forms.ts`, then `docs/13-form-integrations.md`.
 
 ### Change the site address
-`astro.config.mjs`, the `site` line. See `docs/14`.
+Nothing to edit: publishing works out the address itself. For a domain of your own, follow `docs/14`, step 7.
 
 ## What not to touch without a developer
 Anything under `src/` other than the photos folder and `forms.ts`, `scripts/`, `tests/`, `package.json`, `public/_headers`, and the `.github` folder. If the site needs a new kind of page or feature, ask a developer; the tests (`npm run test:e2e`) protect accessibility and basic behaviour.

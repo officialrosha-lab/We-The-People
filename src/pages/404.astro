@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 import Base from '../layouts/Base.astro';
 ---
 
@@ -15,11 +16,11 @@ import Base from '../layouts/Base.astro';
         search the site.
       </p>
       <p class="actions">
-        <a class="btn" href="/">
+        <a class="btn" href={url('/')}>
           Go to the home page
         </a>
-        <a href="/counties/">Find your county</a>
-        <a href="/search/">Search the site</a>
+        <a href={url('/counties/')}>Find your county</a>
+        <a href={url('/search/')}>Search the site</a>
       </p>
     </div>
   </section>

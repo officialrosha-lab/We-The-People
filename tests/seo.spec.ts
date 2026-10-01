@@ -1,13 +1,25 @@
 import { test, expect } from '@playwright/test';
 import { readFileSync } from 'node:fs';
+import { csp } from '../src/lib/csp';
 
 test.describe('search-engine and sharing basics', () => {
-  test('robots.txt points at the sitemap and the sitemap leaves out utility pages', async ({
+  test('while the site is a preview, robots.txt and every page ask search engines to stay away', async ({
+    page,
     request,
   }) => {
     const robots = await (await request.get('/robots.txt')).text();
-    expect(robots).toContain('Sitemap:');
-    expect(robots).toContain('Disallow: /thanks/');
+    expect(robots).toMatch(/User-agent: \*\s+Disallow: \/\s*$/);
+    for (const path of [
+      '/',
+      '/about/',
+      '/stories/2025-08-march-to-the-capitol/',
+    ]) {
+      await page.goto(path);
+      await expect(page.locator('meta[name=robots]')).toHaveAttribute(
+        'content',
+        /noindex/,
+      );
+    }
     const sitemap = await (await request.get('/sitemap-0.xml')).text();
     expect(sitemap).toContain('/counties/lofa/');
     expect(sitemap).not.toMatch(/\/(thanks|search)\//);
@@ -147,6 +159,56 @@ test.describe('security headers file', () => {
     const hosts = [...headers.matchAll(/https:\/\/[^\s;]+/g)].map((m) => m[0]);
     for (const h of hosts)
       expect(['https://formspree.io', 'https://*.sibforms.com']).toContain(h);
+  });
+});
+
+test.describe('Content-Security-Policy in the page', () => {
+  test('every page carries it, and it matches the headers file apart from frame-ancestors', async ({
+    page,
+  }) => {
+    const header = /Content-Security-Policy:\s*(.+)/.exec(
+      readFileSync('public/_headers', 'utf8'),
+    )![1]!;
+    const fromHeader = header
+      .split('; ')
+      .filter((d) => !d.startsWith('frame-ancestors'))
+      .join('; ');
+    expect(fromHeader).toBe(csp);
+    for (const path of [
+      '/',
+      '/join/',
+      '/search/',
+      '/stories/2025-08-march-to-the-capitol/',
+    ]) {
+      await page.goto(path);
+      await expect(
+        page.locator('meta[http-equiv="Content-Security-Policy"]'),
+      ).toHaveAttribute('content', csp);
+    }
+  });
+
+  test('blocks nothing the site needs: no console errors on key pages, including search and the video story', async ({
+    page,
+  }) => {
+    const problems: string[] = [];
+    page.on('console', (m) => {
+      if (['error', 'warning'].includes(m.type())) problems.push(m.text());
+    });
+    page.on('pageerror', (e) => problems.push(e.message));
+    for (const path of [
+      '/',
+      '/join/',
+      '/stories/2025-08-march-to-the-capitol/',
+      '/events/',
+    ]) {
+      await page.goto(path, { waitUntil: 'networkidle' });
+    }
+    await page.goto('/search/');
+    await page.getByPlaceholder('Search the site').fill('drugs');
+    await expect(page.locator('.pagefind-ui__result-link').first()).toBeVisible(
+      { timeout: 10000 },
+    );
+    expect(problems).toEqual([]);
   });
 });
 

@@ -18,6 +18,6 @@ Forms: Join, Contact and Event registration post to Formspree and the newsletter
 Content lives in `content/` (Markdown). Unresolved items are listed in `content/PLACEHOLDERS.md`.
 
 Search works only on a built site (`npm run build && npm run preview`), not in `npm run dev`.
-Security headers are in `public/_headers` (Netlify and Cloudflare Pages format). The production domain goes in `astro.config.mjs` (`site`); sitemap, robots.txt, canonical and share-image addresses all follow it.
+The site is published on GitHub Pages by `.github/workflows/deploy.yml` (switch it on: `docs/14`, step 1). The address and folder are worked out by the workflow; sitemap, robots.txt, canonical and share-image addresses follow them. Every internal address goes through `url()` in `src/lib/url.ts`; `node scripts/check-links.mjs dist <folder>` verifies a build. Security headers are in `public/_headers` for hosts that read it; GitHub Pages cannot send headers, so the policy is also in a `<meta>` tag.
 
 Launching or handing over: `docs/14-launch-runbook.md`, `docs/15-editor-guide.md`, `docs/16-legal-review-pack.md`, `docs/17-handover.md`.

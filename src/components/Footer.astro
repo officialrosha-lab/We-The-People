@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 import { getEntry } from 'astro:content';
 import ActionForm from './ActionForm.astro';
 const neutrality = await getEntry('pages', 'neutrality');
@@ -14,25 +15,25 @@ const neutrality = await getEntry('pages', 'neutrality');
     <ActionForm kind="newsletter" submitLabel="Subscribe" />
     <ul>
       <li>
-        <a href="/record/">Record</a>
+        <a href={url('/record/')}>Record</a>
       </li>
       <li>
-        <a href="/transparency/">Transparency</a>
+        <a href={url('/transparency/')}>Transparency</a>
       </li>
       <li>
-        <a href="/press/">Press</a>
+        <a href={url('/press/')}>Press</a>
       </li>
       <li>
-        <a href="/search/">Search</a>
+        <a href={url('/search/')}>Search</a>
       </li>
       <li>
-        <a href="/contact/">Contact</a>
+        <a href={url('/contact/')}>Contact</a>
       </li>
       <li>
-        <a href="/privacy/">Privacy</a>
+        <a href={url('/privacy/')}>Privacy</a>
       </li>
       <li>
-        <a href="/accessibility/">Accessibility</a>
+        <a href={url('/accessibility/')}>Accessibility</a>
       </li>
     </ul>
     <p>

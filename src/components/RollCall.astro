@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 import map from '../data/liberia-map.json';
 
 interface Props {
@@ -48,10 +49,10 @@ const names = map.counties.map((c) => c.name);
       </h1>
       <p class="reveal roll-sub">{sub}</p>
       <p class="reveal roll-actions">
-        <a class="btn" href="/join/">
+        <a class="btn" href={url('/join/')}>
           Join the movement
         </a>
-        <a href="/about/">Read what we stand for</a>
+        <a href={url('/about/')}>Read what we stand for</a>
       </p>
     </div>
     <ul class="sr-only">

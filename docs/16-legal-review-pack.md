@@ -30,6 +30,9 @@ For a qualified person (a lawyer with knowledge of Liberian law and, where suppo
 - The site sets no cookies and has no analytics or advertising. It stores one flag in the visitor's browser for the visit only (to play the opening animation once). Confirm no consent banner is needed.
 - Each form has a one-line privacy statement in `src/components/ActionForm.astro` ("We use your details only to ..."). Confirm the wording does not over-promise.
 
+## The repository is public
+The site is published from a public GitHub repository (that is what makes GitHub Pages free). Everyone can therefore read every file in it: all text, photographs, the video, and also the working documents, including this pack, the consent log (it records that consent is held, not personal data), the list of open placeholders and the draft legal pages. Questions: Is that acceptable? Should the working documents (`docs/`, `content/CONSENT-LOG.md`, `content/PLACEHOLDERS.md`) move to a private place before launch? Changing the repository to private would stop free publishing on GitHub Pages and need a paid plan or another host.
+
 ## Rights and ownership
 - Logo: ownership of the original files is not yet confirmed (`docs/12`, question 16). The site uses a stand-in until the vector logo is supplied.
 - Fonts: Archivo and Source Serif 4, SIL Open Font License (free to use and embed).

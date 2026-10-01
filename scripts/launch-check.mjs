@@ -19,12 +19,27 @@ const walk = (dir, out = []) => {
 const findings = []; // { level, what, fix }
 const add = (level, what, fix) => findings.push({ level, what, fix });
 
-// 1. Production address.
-if (/example\.org/.test(read('astro.config.mjs')))
+// 1. Production address and publishing.
+const config = read('astro.config.mjs');
+const deploy = read('.github/workflows/deploy.yml');
+const publishedByWorkflow = /SITE_URL:\s*\$\{\{/.test(deploy);
+if (!publishedByWorkflow && /example\.org/.test(config))
   add(
     'BLOCKER',
-    'The site address is still the placeholder example.org (canonical links, sitemap, robots, share images all use it).',
-    'Paste the real address into `site` in astro.config.mjs.',
+    'The site address is still the placeholder example.org and no deploy workflow supplies a real one.',
+    'Set up GitHub Pages (docs/14, step 1) or paste the real address into astro.config.mjs.',
+  );
+else if (publishedByWorkflow)
+  add(
+    'INFO',
+    'The deploy workflow supplies the real address when it publishes. Publishing is switched on in the repository settings (docs/14, step 1).',
+    'Settings > Pages > Source: GitHub Actions, then the variable DEPLOY_PAGES = true.',
+  );
+if (/ALLOW_SEARCH_ENGINES = false/.test(read('src/lib/site.ts')))
+  add(
+    'BLOCKER',
+    'Search engines are told to ignore the site (ALLOW_SEARCH_ENGINES is false in src/lib/site.ts). Right for a preview, wrong for launch.',
+    'On launch day set it to true (docs/14, step 8), then run the smoke test without --preview.',
   );
 
 // 2. Form services.

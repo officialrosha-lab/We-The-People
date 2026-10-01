@@ -1,17 +1,18 @@
 ---
+import { url } from '../lib/url';
 const links = [
-  { href: '/about/', label: 'About' },
-  { href: '/our-work/', label: 'Our work' },
-  { href: '/counties/', label: 'Counties' },
-  { href: '/stories/', label: 'Stories' },
-  { href: '/events/', label: 'Events' },
-  { href: '/search/', label: 'Search' },
+  { href: url('/about/'), label: 'About' },
+  { href: url('/our-work/'), label: 'Our work' },
+  { href: url('/counties/'), label: 'Counties' },
+  { href: url('/stories/'), label: 'Stories' },
+  { href: url('/events/'), label: 'Events' },
+  { href: url('/search/'), label: 'Search' },
 ];
 ---
 
 <header class="site-header" data-site-header>
-  <a class="brand" href="/">
-    <img src="/mark-placeholder.svg" alt="" width="40" height="40" />
+  <a class="brand" href={url('/')}>
+    <img src={url('/mark-placeholder.svg')} alt="" width="40" height="40" />
     <span>We The People Movement</span>
   </a>
   <div class="header-actions">
@@ -33,7 +34,7 @@ const links = [
         ))}
       </ul>
     </nav>
-    <a class="btn" href="/join/">
+    <a class="btn" href={url('/join/')}>
       Join the movement
     </a>
   </div>

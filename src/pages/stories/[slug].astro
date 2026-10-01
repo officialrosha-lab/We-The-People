@@ -1,4 +1,5 @@
 ---
+import { url } from '../../lib/url';
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Photo from '../../components/Photo.astro';
@@ -123,12 +124,12 @@ const fmt = new Intl.DateTimeFormat('en-GB', {
     <section class="section" data-ground="night">
       <div class="wrap">
         <p>
-          <a class="btn" href="/join/">
+          <a class="btn" href={url('/join/')}>
             Join the movement
           </a>
         </p>
         <p>
-          <a href="/stories/">All stories</a>
+          <a href={url('/stories/')}>All stories</a>
         </p>
       </div>
     </section>

@@ -1,0 +1,51 @@
+name: deploy
+# Publishes the site on GitHub Pages and rebuilds it every night (so events move to "Past events" by themselves).
+#
+# Nothing is published until the owner turns it on, in two steps (docs/14, step 1):
+#   1. Repository Settings > Pages > Build and deployment > Source: "GitHub Actions".
+#   2. Repository Settings > Secrets and variables > Actions > Variables > New repository variable:
+#      name DEPLOY_PAGES, value true.
+# It deploys only from the repository's default branch.
+on:
+  push:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  build:
+    if: vars.DEPLOY_PAGES == 'true' && github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      # Tells us the real address and, on a project site without a custom domain, the folder (/RepositoryName).
+      - id: pages
+        uses: actions/configure-pages@v5
+      - name: Build
+        run: npm run build
+        env:
+          SITE_URL: ${{ steps.pages.outputs.origin }}
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+      # Fails the deployment if any link or file address would be wrong at this address.
+      - name: Check every internal address
+        run: node scripts/check-links.mjs dist "${{ steps.pages.outputs.base_path }}"
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: dist }
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

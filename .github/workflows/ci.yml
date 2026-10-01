@@ -13,13 +13,27 @@ jobs:
       - run: npm run build
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
-      # Mobile Lighthouse on key pages: every score 95 or more, LCP under 2.5 s, CLS under 0.1.
+      # Mobile Lighthouse on key pages: every score 95 or more, LCP under 2.5 s, CLS under 0.1. Built as the launch
+      # configuration (search engines allowed), because Lighthouse's SEO score drops on a deliberate noindex preview.
       - name: Lighthouse
         run: |
-          npm run build
+          PUBLIC_ALLOW_INDEXING=1 npm run build
           npm run preview -- --port 4321 --ignore-lock &
           npx wait-on http://localhost:4321 --timeout 30000
           npm run lighthouse
+  # The site must also work in a subfolder (GitHub Pages project address): every internal address is checked.
+  subfolder:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm run build
+        env:
+          SITE_URL: https://example.github.io
+          BASE_PATH: /Repository
+      - run: node scripts/check-links.mjs dist /Repository
   # Firefox and a WebKit (Safari) engine. Not blocking yet: these have not been run by the author.
   cross-browser:
     runs-on: ubuntu-latest

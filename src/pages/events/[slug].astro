@@ -1,4 +1,5 @@
 ---
+import { url } from '../../lib/url';
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import PageHeader from '../../components/PageHeader.astro';
@@ -43,7 +44,7 @@ const isPast = (event.data.end ?? event.data.start).getTime() < Date.now();
       <Content />
       {!isPast && (
         <p>
-          <a href={`/events/${event.id}.ics`}>Add to calendar</a>
+          <a href={url(`/events/${event.id}.ics`)}>Add to calendar</a>
         </p>
       )}
     </div>

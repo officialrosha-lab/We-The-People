@@ -52,4 +52,4 @@ Legend: **Done** = built and tested. **Owner** = needs a decision, content or ac
 | Sitemap, robots, redirects, canonical tags | **Done / Owner** | Generated and tested (34 pages). They use a placeholder address until the domain is set. Redirects (www and http) are set at the host. |
 | Backups and uptime monitoring on; error alerts routed | **Owner** | Git is the backup; routine in `docs/17`. Uptime monitor and alert contact to be set up. Nothing runs on a server, so there are no server errors to alert on. |
 | Editor guide delivered and one editor trained | **Done / People** | `docs/15` written for non-developers. Training of one editor still to be done. |
-| Domain, SSL, email deliverability (SPF, DKIM, DMARC) | **Owner** | Steps in `docs/14`. HTTPS is automatic on the recommended hosts. |
+| Domain, SSL, email deliverability (SPF, DKIM, DMARC) | **Owner** | Publishing is set up for GitHub Pages (free HTTPS; `docs/14`, step 1). A domain of your own is optional (step 7). SPF, DKIM and DMARC are needed only for email sent from your own domain. |

@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 import {
   formEndpoint,
   newsletterEndpoint,
@@ -177,7 +178,8 @@ const nextStep: Record<Props['kind'], string> = {
     </noscript>
   )}
   <p class="af-privacy">
-    {privacy[kind]} <a href="/privacy/">Read how we handle your information</a>.
+    {privacy[kind]}{' '}
+    <a href={url('/privacy/')}>Read how we handle your information</a>.
   </p>
 </div>
 

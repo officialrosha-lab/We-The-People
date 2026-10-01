@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 import { getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 
@@ -32,18 +33,18 @@ const p = await getImage({ src: poster, width: 640, format: 'webp' });
     height={p.attributes.height}
     aria-label={title}
   >
-    <source src={src} type="video/mp4" />
+    <source src={url(src)} type="video/mp4" />
     {captions && (
       <track
         kind="captions"
-        src={captions}
+        src={url(captions)}
         srclang="en"
         label="English captions"
         default
       />
     )}
     <p>
-      Your browser cannot play this video. <a href={src}>Download it</a>.
+      Your browser cannot play this video. <a href={url(src)}>Download it</a>.
     </p>
   </video>
   <figcaption>

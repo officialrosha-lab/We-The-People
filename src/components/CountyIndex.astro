@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 import { counties, paths, viewBox } from '../lib/counties';
 ---
 
@@ -6,7 +7,7 @@ import { counties, paths, viewBox } from '../lib/counties';
   <ul class="ci-list">
     {counties.map((c) => (
       <li>
-        <a href={`/counties/${c.slug}/`} data-county={c.id}>
+        <a href={url(`/counties/${c.slug}/`)} data-county={c.id}>
           {c.name}
         </a>
       </li>

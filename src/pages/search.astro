@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 import Base from '../layouts/Base.astro';
 import PageHeader from '../components/PageHeader.astro';
 ---
@@ -12,18 +13,22 @@ import PageHeader from '../components/PageHeader.astro';
   <PageHeader title="Search" />
   <section class="section" data-ground="night">
     <div class="wrap">
-      <div id="search"></div>
+      <div
+        id="search"
+        data-pagefind={url('/pagefind/')}
+        data-base={url('/').replace(/\/$/, '')}
+      ></div>
       <noscript>
         <p>
           Search needs JavaScript. You can still use the menu, the{' '}
-          <a href="/counties/">county list</a> and the{' '}
-          <a href="/stories/">stories</a>.
+          <a href={url('/counties/')}>county list</a> and the{' '}
+          <a href={url('/stories/')}>stories</a>.
         </p>
       </noscript>
       <p id="search-fail" hidden>
         Search could not load. Use the menu, the{' '}
-        <a href="/counties/">county list</a> or the{' '}
-        <a href="/stories/">stories</a> instead.
+        <a href={url('/counties/')}>county list</a> or the{' '}
+        <a href={url('/stories/')}>stories</a> instead.
       </p>
     </div>
   </section>
@@ -33,7 +38,8 @@ import PageHeader from '../components/PageHeader.astro';
   // Pagefind builds its index when the site is built; it is downloaded only on this page.
   const mount = document.querySelector('#search');
   const fail = document.querySelector<HTMLElement>('#search-fail');
-  const base = '/pagefind/';
+  const base = mount?.getAttribute('data-pagefind') ?? '/pagefind/';
+  const site = mount?.getAttribute('data-base') ?? '';
   (async () => {
     try {
       await new Promise<void>((resolve, reject) => {
@@ -52,6 +58,8 @@ import PageHeader from '../components/PageHeader.astro';
       ).PagefindUI;
       new PagefindUI({
         element: mount,
+        baseUrl: site + '/',
+        bundlePath: base,
         showImages: false,
         showSubResults: false,
         resetStyles: false,

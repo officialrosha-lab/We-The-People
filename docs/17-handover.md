@@ -3,14 +3,14 @@
 What the owner needs to keep the site running. Fill in the names marked [PLACEHOLDER].
 
 ## What the site is
-A static website: a folder of finished pages (`dist/`) built from text files and photos. No server, no database, no login, no cookies, no analytics. The only things that run on the visitor's side are small scripts for the opening animation, the menu, search and form sending. Everything else is plain pages.
+A static website: a folder of finished pages (`dist/`) built from text files and photos and published on GitHub Pages. No server, no database, no login, no cookies, no analytics. The only things that run on the visitor's side are small scripts for the opening animation, the menu, search and form sending. Everything else is plain pages.
 
 ## Accounts and who owns them
 | Service | What it is for | Owner | Notes |
 |---|---|---|---|
 | GitHub (this repository) | All content, photos, code and history; the backup | [PLACEHOLDER: name/organisation] | Give at least two people admin access, so one person leaving cannot lock the site. |
-| Host (Netlify or Cloudflare Pages) | Builds and serves the site; HTTPS; rollbacks | [PLACEHOLDER] | Deploy hook for the nightly rebuild (`docs/14`). |
-| Domain registrar | The web address | [PLACEHOLDER] | Turn on auto-renew and registrar lock. |
+| GitHub Pages (part of the same repository) | Builds, serves and rebuilds the site every night; free HTTPS | [PLACEHOLDER] | Switched on in Settings > Pages and the variable `DEPLOY_PAGES` (`docs/14`, step 1). The repository must stay public for the free plan. |
+| Domain registrar (optional) | A web address of your own | [PLACEHOLDER] | Turn on auto-renew and registrar lock. Until then the address is `officialrosha-lab.github.io/We-The-People/`. |
 | Formspree | Receives Join, Contact and Event forms; emails the inbox | [PLACEHOLDER] | Free plan caps submissions; the inbox address is [PLACEHOLDER]. |
 | Brevo | Newsletter list and sending | [PLACEHOLDER] | Double confirmation must stay on. |
 | Search Console / Bing Webmaster | Search visibility | [PLACEHOLDER] | Submit `sitemap-index.xml`. |
