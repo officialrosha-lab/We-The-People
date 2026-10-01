@@ -130,7 +130,7 @@ Freedom Liberia is a grassroots movement born in Monrovia, working under the umb
 - Family restoration programmes, reuniting loved ones and rebuilding dignity.
 - Daily free study classes for elementary and high-school students in the ghettos, creating safe zones that protect children from drugs and violence.
 
-To reach Freedom Liberia, call or WhatsApp [0888320142](tel:0888320142) or write to [liberiawatch@proton.me](mailto:liberiawatch@proton.me).
+To reach Freedom Liberia, call or WhatsApp [0888320142](tel:0888320142) write to [liberiawatch@proton.me](mailto:liberiawatch@proton.me), or follow its [official Facebook page](https://www.facebook.com/share/19XLntt277/).
 
 Together, We The People provides the national vision and organisational framework, MOTARWY leads reintegration and youth transformation, and Freedom Liberia drives community cleanups, safe zones and grassroots rehabilitation, so that this work is part of a larger movement for national renewal.
 

@@ -173,3 +173,7 @@ At the owner's request, MOTARWY (name and logo, as supplied) and Freedom Liberia
 ## D29: Photo gallery on the drugs and recovery page
 
 The programs collection gained an optional `gallery` (image, alt text, caption), shown under the text as "From the field". Thirty photos from the partners' activities supplied by the owner are listed in `content/programs/drugs-and-recovery.md`. They load only when scrolled near (page Lighthouse 99, LCP 2.0 s). Captions describe only what is visible, with no dates, places or names. Several photos show people in recovery or receiving health care; the owner states full consent, and `content/CONSENT-LOG.md` carries open placeholders asking the owner to confirm it covers each and where the records are kept.
+
+## D30: Consent confirmed for the partner photos; Freedom Liberia Facebook link
+
+The owner confirmed (2026-10-01) that everyone shown in the partner-activity photos, including the banner and clinic photos, gave full consent, and supplied Freedom Liberia's official Facebook page, now linked from the drugs and recovery page. Only the location of the written records remains an open item.
