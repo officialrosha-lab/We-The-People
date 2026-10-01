@@ -19,11 +19,68 @@ test.describe('school visit story', () => {
     }
   });
 
-  test('lead photo loads first, the rest are lazy', async ({ page }) => {
-    await page.goto(story);
+  test('the lead photo loads first; the others are not requested until you scroll near them', async ({
+    page,
+  }) => {
+    const photoRequests: string[] = [];
+    page.on('request', (r) => {
+      if (/\/_astro\/school-visit-.*\.(avif|webp|jpg)/.test(r.url()))
+        photoRequests.push(r.url());
+    });
+    await page.goto(story, { waitUntil: 'networkidle' });
     const imgs = page.locator('article img');
     await expect(imgs.first()).toHaveAttribute('loading', 'eager');
-    await expect(imgs.nth(1)).toHaveAttribute('loading', 'lazy');
+    // Before scrolling: only the lead photo (students) has been fetched.
+    expect(photoRequests.length).toBeGreaterThan(0);
+    expect(
+      photoRequests.every((u) => u.includes('school-visit-students')),
+    ).toBe(true);
+    // The others are placeholders waiting for the scroll observer.
+    for (const i of [1, 2, 3, 4])
+      await expect(imgs.nth(i)).toHaveAttribute('data-src', /school-visit-/);
+    // Scroll to the end: now every photo has really loaded.
+    await page.evaluate(async () => {
+      for (let y = 0; y < document.body.scrollHeight; y += 400) {
+        scrollTo(0, y);
+        await new Promise((r) => setTimeout(r, 100));
+      }
+    });
+    await page.waitForLoadState('networkidle');
+    expect(
+      await imgs.evaluateAll((a) =>
+        a.every(
+          (i) =>
+            (i as HTMLImageElement).complete &&
+            (i as HTMLImageElement).naturalWidth > 0,
+        ),
+      ),
+    ).toBe(true);
+    expect(
+      await imgs.evaluateAll((a) =>
+        a.some(
+          (i) =>
+            i.hasAttribute('data-src') &&
+            (i as HTMLImageElement).src.startsWith('data:'),
+        ),
+      ),
+    ).toBe(false);
+  });
+
+  test('without JavaScript every photo still shows', async ({ browser }) => {
+    const ctx = await browser.newContext({ javaScriptEnabled: false });
+    const page = await ctx.newPage();
+    await page.goto(story);
+    const visible = page.locator('article img:visible');
+    expect(await visible.count()).toBe(5);
+    for (const img of await visible.all()) {
+      expect(((await img.getAttribute('src')) ?? '').startsWith('data:')).toBe(
+        false,
+      );
+      expect(((await img.getAttribute('alt')) ?? '').length).toBeGreaterThan(
+        20,
+      );
+    }
+    await ctx.close();
   });
 
   test('serves modern formats and sets a link-preview image', async ({

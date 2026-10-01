@@ -35,10 +35,12 @@ for (const file of walk(dist).filter((f) => f.endsWith('.html'))) {
   const html = readFileSync(file, 'utf8');
   const addrs = [];
   for (const m of html.matchAll(
-    /\s(?:href|src|action|poster|data-poster|data-pagefind)=(?:"([^"]*)"|'([^']*)')/g,
+    /\s(?:href|src|action|poster|data-poster|data-pagefind|data-src)=(?:"([^"]*)"|'([^']*)')/g,
   ))
     addrs.push(m[1] ?? m[2]);
-  for (const m of html.matchAll(/\s(?:srcset|imagesrcset)="([^"]*)"/g))
+  for (const m of html.matchAll(
+    /\s(?:srcset|imagesrcset|data-srcset)="([^"]*)"/g,
+  ))
     for (const part of m[1].split(',')) addrs.push(part.trim().split(/\s+/)[0]);
   for (const m of html.matchAll(
     /<meta[^>]+property="og:image"[^>]+content="([^"]*)"/g,

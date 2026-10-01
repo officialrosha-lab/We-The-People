@@ -26,6 +26,7 @@ test.describe('video player (test fixture story)', () => {
     await expect(video).toHaveAttribute('controls', '');
     await expect(video).toHaveAttribute('preload', 'none');
     await expect(video).not.toHaveAttribute('autoplay', /.*/);
+    await video.scrollIntoViewIfNeeded(); // the poster is attached when the video is near the screen
     await expect(video).toHaveAttribute('poster', /\.webp/);
     await expect(video).toHaveAttribute('playsinline', '');
     expect(media).toHaveLength(0);
@@ -78,6 +79,7 @@ test.describe('the march speech video', () => {
     await expect(video).toHaveAttribute('controls', '');
     await expect(video).toHaveAttribute('preload', 'none');
     await expect(video).not.toHaveAttribute('autoplay', /.*/);
+    await video.scrollIntoViewIfNeeded(); // the poster is attached when the video is near the screen
     await expect(video).toHaveAttribute('poster', /\.webp/);
     await expect(page.locator('video track')).toHaveCount(0);
     await expect(

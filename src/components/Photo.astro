@@ -1,5 +1,5 @@
 ---
-import { Picture } from 'astro:assets';
+import { Picture, getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 
 interface Props {
@@ -13,19 +13,82 @@ interface Props {
   priority?: boolean;
 }
 const { src, alt, caption, credit, sizes, priority = false } = Astro.props;
+
+// The same widths the Picture component offers: the standard steps below the original, plus the original.
+const widths = [
+  ...new Set([
+    ...[400, 800, 1200, 1600].filter((w) => w < src.width),
+    src.width,
+  ]),
+];
+const srcset = async (format: 'avif' | 'webp' | 'jpeg') =>
+  (
+    await Promise.all(
+      widths.map(
+        async (w) => `${(await getImage({ src, width: w, format })).src} ${w}w`,
+      ),
+    )
+  ).join(', ');
+// Photos below the fold are not requested until the visitor scrolls close to them (see the script). Browsers decide
+// for themselves how far ahead "loading=lazy" fetches, and on a slow connection some fetch everything early, which
+// slows the page's main photo. Without JavaScript the plain Picture inside <noscript> is used instead.
+const deferred = priority
+  ? null
+  : {
+      avif: await srcset('avif'),
+      webp: await srcset('webp'),
+      jpeg: await srcset('jpeg'),
+      fallback: (
+        await getImage({
+          src,
+          width: widths[Math.min(1, widths.length - 1)]!,
+          format: 'jpeg',
+        })
+      ).src,
+    };
 ---
 
 <figure class="photo">
-  <Picture
-    src={src}
-    alt={alt}
-    formats={['avif', 'webp']}
-    widths={[400, 800, 1200, 1600]}
-    sizes={sizes}
-    loading={priority ? 'eager' : 'lazy'}
-    fetchpriority={priority ? 'high' : 'auto'}
-    decoding={priority ? 'sync' : 'async'}
-  />
+  {priority ? (
+    <Picture
+      src={src}
+      alt={alt}
+      formats={['avif', 'webp']}
+      widths={[400, 800, 1200, 1600]}
+      sizes={sizes}
+      loading="eager"
+      fetchpriority="high"
+      decoding="sync"
+    />
+  ) : (
+    <>
+      <picture data-defer>
+        <source type="image/avif" data-srcset={deferred!.avif} sizes={sizes} />
+        <source type="image/webp" data-srcset={deferred!.webp} sizes={sizes} />
+        <img
+          src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+          data-srcset={deferred!.jpeg}
+          data-src={deferred!.fallback}
+          sizes={sizes}
+          alt={alt}
+          width={src.width}
+          height={src.height}
+          decoding="async"
+        />
+      </picture>
+      <noscript>
+        <Picture
+          src={src}
+          alt={alt}
+          formats={['avif', 'webp']}
+          widths={[400, 800, 1200, 1600]}
+          sizes={sizes}
+          loading="lazy"
+          decoding="async"
+        />
+      </noscript>
+    </>
+  )}
   {(caption || credit) && (
     <figcaption>
       {caption}
@@ -34,6 +97,41 @@ const { src, alt, caption, credit, sizes, priority = false } = Astro.props;
     </figcaption>
   )}
 </figure>
+
+<script>
+  // Load each deferred photo when it comes within about 400px of the screen. Runs once per page.
+  const pictures = document.querySelectorAll<HTMLElement>(
+    'picture[data-defer]',
+  );
+  const load = (picture: HTMLElement) => {
+    picture
+      .querySelectorAll<HTMLSourceElement>('source[data-srcset]')
+      .forEach((s) => {
+        s.srcset = s.dataset.srcset ?? '';
+      });
+    const img = picture.querySelector<HTMLImageElement>('img[data-src]');
+    if (img) {
+      img.srcset = img.dataset.srcset ?? '';
+      img.src = img.dataset.src ?? '';
+    }
+    picture.removeAttribute('data-defer');
+  };
+  if (pictures.length) {
+    if (!('IntersectionObserver' in window)) pictures.forEach(load);
+    else {
+      const io = new IntersectionObserver(
+        (entries) =>
+          entries.forEach((e) => {
+            if (!e.isIntersecting) return;
+            load(e.target as HTMLElement);
+            io.unobserve(e.target);
+          }),
+        { rootMargin: '400px 0px' },
+      );
+      pictures.forEach((p) => io.observe(p));
+    }
+  }
+</script>
 
 <style>
   .photo {
@@ -44,6 +142,10 @@ const { src, alt, caption, credit, sizes, priority = false } = Astro.props;
     inline-size: 100%;
     block-size: auto;
     border-radius: var(--radius-block);
+  }
+  /* Without JavaScript the placeholder is hidden and the <noscript> photo shows instead. */
+  :global(html:not(.menu-js)) .photo picture[data-defer] {
+    display: none;
   }
   figcaption {
     margin-block-start: var(--s-2);

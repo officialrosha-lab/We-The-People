@@ -26,7 +26,13 @@ const MIN = 95;
 const MAX_LCP = 2500;
 
 const chrome = await chromeLauncher.launch({
-  chromeFlags: ['--headless=new', '--no-sandbox'],
+  chromeFlags: [
+    '--headless=new',
+    '--no-sandbox',
+    ...(process.env.CHROME_EXTRA_FLAGS
+      ? process.env.CHROME_EXTRA_FLAGS.split(' ')
+      : []),
+  ],
 });
 let failed = 0;
 for (const path of pages) {
