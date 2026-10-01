@@ -17,6 +17,13 @@ const stories = (await getCollection('stories')).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
 const leadStory = stories[0];
+const march = stories.find((x) => x.id === '2025-08-march-to-the-capitol');
+const marchPhoto = (name: string) =>
+  march?.data.images.find((i) => i.src.src.includes(name));
+const marchLead = marchPhoto('march-stage-rain');
+const marchStrip = ['march-banner', 'march-speaker', 'march-press']
+  .map(marchPhoto)
+  .filter((x) => x !== undefined);
 const fmt = new Intl.DateTimeFormat('en-GB', {
   day: 'numeric',
   month: 'long',
@@ -47,6 +54,42 @@ const fmt = new Intl.DateTimeFormat('en-GB', {
       <p class="statement">{home.body}</p>
     </div>
   </section>
+  {march && marchLead && (
+    <section class="section" data-ground="navy">
+      <div class="wrap">
+        <div class="story-lead march">
+          <Photo
+            src={marchLead.src}
+            alt={marchLead.alt}
+            sizes="(min-width: 900px) 58vw, 92vw"
+          />
+          <div>
+            <p class="kicker">
+              <time datetime="2025-08-07">7 August 2025</time>
+            </p>
+            <h2>Thousands marched in the rain</h2>
+            <p>{march.data.summary}</p>
+            <p>
+              <a href={url(`/stories/${march.id}/`)}>
+                Read the story and watch the speech
+              </a>
+            </p>
+          </div>
+        </div>
+        <ul class="strip">
+          {marchStrip.map((i) => (
+            <li>
+              <Photo
+                src={i.src}
+                alt={i.alt}
+                sizes="(min-width: 900px) 30vw, 92vw"
+              />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
   <section class="section" data-ground="night">
     <div class="wrap">
       <h2>What we are working on</h2>
@@ -168,6 +211,36 @@ const fmt = new Intl.DateTimeFormat('en-GB', {
   @media (min-width: 900px) {
     .story-lead {
       grid-template-columns: 7fr 5fr;
+    }
+  }
+  .kicker {
+    margin: 0;
+  }
+  .march h2 {
+    font-size: var(--step-3);
+    margin-block: var(--s-1) var(--s-3);
+  }
+  .march a {
+    color: var(--heading);
+  }
+  .strip {
+    list-style: none;
+    margin: var(--s-4) 0 0;
+    padding: 0;
+    display: grid;
+    gap: var(--s-3);
+  }
+  /* Same shape for all three so the row is tidy; the photos are cropped, not stretched. */
+  .strip :global(img) {
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+  }
+  @media (min-width: 700px) {
+    .strip :global(img) {
+      aspect-ratio: 4 / 3;
+    }
+    .strip {
+      grid-template-columns: repeat(3, 1fr);
     }
   }
   .cta {

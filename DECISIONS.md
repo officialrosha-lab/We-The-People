@@ -125,3 +125,7 @@ The owner supplied the logo as a 921x854 JPEG with the black background baked in
 ## D17: Motion and interaction polish, kept inside docs/design/07
 
 Added only what 07 allows: a cross-fade between pages (CSS cross-document View Transitions, with the header held still, off under reduced motion) and press feedback on buttons (transform only) plus an eased link-underline change. Smooth scrolling was tried and dropped: it slows programmatic scrolling and broke the photo-loading test. Scroll-in entrances, hover lifts and parallax stay out, as 07 says.
+
+## D18: March photo band on the home page
+
+The home page showed one photo and only text elsewhere, while the march photos sat on the Stories pages. A navy band after the opening statement now shows the march (lead photo, date, summary, link to the story and its video) and a row of three more photos. It reuses the story's own photos and alt text, so nothing is duplicated in content files. The photos load only when scrolled near, so the hero stays first (home Lighthouse 100/100/100/100, LCP 1.7 s).
