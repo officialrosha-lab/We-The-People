@@ -11,22 +11,22 @@ if (!page) throw new Error('content/pages/join.md is missing');
     <div class="wrap">
       <h1>Join the movement</h1>
       <p class="lead">{page.body}</p>
-      <ActionForm kind="join" submitLabel="Join the movement" />
-    </div>
-  </section>
-  <section class="section">
-    <div class="wrap prose">
-      <h2>What happens after you join</h2>
-      <p>
-        We contact you using the email address or phone number you gave.
-        [PLACEHOLDER: how soon, and who contacts you]
-      </p>
-      <h2>Your information</h2>
-      <p>
-        We ask for your name, a way to reach you and your county, so that we can
-        put you in touch with the people near you. [PLACEHOLDER: who sees it,
-        how long it is kept, how to be removed; needs legal review]
-      </p>
+      <div class="join-grid">
+        <ActionForm kind="join" submitLabel="Join the movement" />
+        <aside class="after" aria-label="What happens to your details">
+          <h2>What happens after you join</h2>
+          <p>
+            We contact you using the email address or phone number you gave.
+            [PLACEHOLDER: how soon, and who contacts you]
+          </p>
+          <h2>Your information</h2>
+          <p>
+            We ask for your name, a way to reach you and your county, so that we
+            can put you in touch with the people near you. [PLACEHOLDER: who
+            sees it, how long it is kept, how to be removed; needs legal review]
+          </p>
+        </aside>
+      </div>
     </div>
   </section>
 </Base>
@@ -37,5 +37,30 @@ if (!page) throw new Error('content/pages/join.md is missing');
   }
   .lead {
     font-size: var(--step-1);
+  }
+  .join-grid {
+    display: grid;
+    gap: var(--s-5);
+  }
+  .after h2 {
+    color: var(--white);
+    font-size: var(--step-1);
+    margin-block: 0 var(--s-2);
+  }
+  .after h2:not(:first-child) {
+    margin-block-start: var(--s-4);
+  }
+  @media (min-width: 1000px) {
+    .join-grid {
+      grid-template-columns: minmax(0, 36rem) minmax(0, 28rem);
+      column-gap: var(--s-7);
+      align-items: start;
+      justify-content: start;
+    }
+    .after {
+      padding-block-start: var(--s-5);
+      border-inline-start: 4px solid var(--white);
+      padding-inline-start: var(--s-4);
+    }
   }
 </style>

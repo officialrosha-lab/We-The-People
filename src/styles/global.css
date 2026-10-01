@@ -120,6 +120,29 @@
   .wrap.prose > * {
     max-inline-size: var(--measure);
   }
+  /* Wide screens: each heading sits in a narrow left column and its text beside it, so long pages read as a document with a margin, not a strip down the left edge. */
+  @media (min-width: 1000px) {
+    .wrap.prose {
+      display: grid;
+      grid-template-columns: minmax(11rem, 3fr) minmax(0, 8fr);
+      column-gap: var(--s-6);
+    }
+    .wrap.prose > * {
+      grid-column: 2;
+    }
+    .wrap.prose > h2 {
+      grid-column: 1;
+      margin-block-start: 0;
+      font-size: var(--step-1);
+      line-height: 1.15;
+    }
+    .wrap.prose > h2 + * {
+      margin-block-start: 0.2em;
+    }
+    .wrap.prose > :has(+ h2) {
+      margin-block-end: var(--s-5);
+    }
+  }
   .prose h2 {
     font-size: var(--step-2);
     margin-block: var(--s-5) var(--s-3);

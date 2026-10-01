@@ -71,13 +71,29 @@ const fmt = new Intl.DateTimeFormat('en-GB', {
             <ul class="list">
               {rest.map((s) => (
                 <li>
-                  <time datetime={s.data.date.toISOString().slice(0, 10)}>
-                    {fmt.format(s.data.date)}
-                  </time>
-                  <h2>
-                    <a href={url(`/stories/${s.id}/`)}>{s.data.title}</a>
-                  </h2>
-                  <p>{s.data.summary}</p>
+                  {s.data.images[0] && (
+                    <a
+                      class="thumb"
+                      href={url(`/stories/${s.id}/`)}
+                      tabindex="-1"
+                      aria-hidden="true"
+                    >
+                      <Photo
+                        src={s.data.images[0].src}
+                        alt=""
+                        sizes="(min-width: 900px) 24vw, 92vw"
+                      />
+                    </a>
+                  )}
+                  <div>
+                    <time datetime={s.data.date.toISOString().slice(0, 10)}>
+                      {fmt.format(s.data.date)}
+                    </time>
+                    <h2>
+                      <a href={url(`/stories/${s.id}/`)}>{s.data.title}</a>
+                    </h2>
+                    <p>{s.data.summary}</p>
+                  </div>
                 </li>
               ))}
             </ul>
@@ -118,6 +134,20 @@ const fmt = new Intl.DateTimeFormat('en-GB', {
   }
   .list h2 {
     font-size: var(--step-2);
+  }
+  .list li {
+    display: grid;
+    gap: var(--s-3) var(--s-4);
+    align-items: start;
+  }
+  .thumb :global(img) {
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+  @media (min-width: 700px) {
+    .list li {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    }
   }
   time {
     font-family: var(--font-ui);

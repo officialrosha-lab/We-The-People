@@ -149,3 +149,7 @@ At the owner's request the introduction video, its description and poster were r
 ## D23: Look-and-feel refinement inside the locked design
 
 The palette, type, Roll Call hero and the rules in docs/design (square blocks, pill buttons only, no shadows, no gradients, no arrows, no all-caps labels) stay. Refined: buttons are larger and bolder with a flat darker edge (a border, not a shadow) that sinks when pressed, and a quiet outlined variant for secondary actions (`.btn-quiet`, used in the hero); list rows are whole-row links with a gold marker on hover or focus; Record rows read as a ledger with the date in its own column; the current page is marked in the header (gold bar and `aria-current`); the footer is split into two columns under a red rule. Considered and rejected: gold glows, gradient buttons and numbered markers (generic, and the content is not a sequence). New token: `--red-deep`.
+
+## D24: Wide-screen layouts for text pages, Join and Stories
+
+On screens 1000px and wider, text pages (About, Contact, Privacy and the like) put each heading in a left margin column with its text beside it, instead of one narrow strip down the left edge. The Join page puts the "what happens after you join" notes beside the form, under a white rule. The Stories list shows a cropped thumbnail of each story. Phones keep the single column. No colours, fonts or hero changed.
