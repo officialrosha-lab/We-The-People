@@ -181,3 +181,7 @@ The owner confirmed (2026-10-01) that everyone shown in the partner-activity pho
 ## D31: Consent record-location notes dropped
 
 At the owner's request the open "where are the written consent records stored" notes were removed from the consent log. The owner holds the records; the log states that consent is held.
+
+## D32: Consent items cleared from the placeholder list
+
+At the owner's request the remaining consent-related open items (where records are kept, partner and video-audio consent) were removed from `content/PLACEHOLDERS.md`, and a stale note saying the march video page announces missing captions was corrected.
