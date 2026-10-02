@@ -177,3 +177,7 @@ The programs collection gained an optional `gallery` (image, alt text, caption),
 ## D30: Consent confirmed for the partner photos; Freedom Liberia Facebook link
 
 The owner confirmed (2026-10-01) that everyone shown in the partner-activity photos, including the banner and clinic photos, gave full consent, and supplied Freedom Liberia's official Facebook page, now linked from the drugs and recovery page. Only the location of the written records remains an open item.
+
+## D31: Consent record-location notes dropped
+
+At the owner's request the open "where are the written consent records stored" notes were removed from the consent log. The owner holds the records; the log states that consent is held.
